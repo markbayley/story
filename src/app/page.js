@@ -3,11 +3,11 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ".//styles.css";
 
-import Slider from 'react-slick';
+import Slider from "react-slick";
 
-import flower from "../../public/flower.png";
-import fruit from "../../public/fruit.png";
-import profile from "../../public/profile.png";
+import flower from "../../public/pic1.jpg";
+import fruit from "../../public/pic2.jpg";
+import profile from "../../public/pic3.jpg";
 import home from "../../public/home.png";
 
 export default function StoryPage() {
@@ -73,15 +73,48 @@ export default function StoryPage() {
     slidesToScroll: 1,
     initialSlide: 0,
     beforeChange: (current, next) => setCarouselIndex(next),
-    arrows: false,
+    arrows: true,
   };
 
+  const carousel = (
+    <div className="container xl:px-40 mx-auto flex  border ">
+      <div className="w-full h-full lg:w-1/2  border">
+        <Slider {...settings}>
+          {images.map((img, index) => (
+            <div key={index} className="border-red-500 border-2">
+              <Image src={`data:image/jpeg;base64,${img}`} alt="images" />
+            </div>
+          ))}
+        </Slider>
+      </div>
+      <div className="w-full lg:w-1/2 p-6 overflow-y-auto  border-1 bg-orange-200 ">
+        <div className="  p-4 text-stone-900">
+          <h1 className="text-4xl font-bold">{prompt ? prompt : "Tontomo"}</h1>
+        </div>
+        <p className="text-lg text-stone-900 px-4">
+          {story
+            ? story
+            : "Once upon a time, in a small village nestled amongst rolling hills and babbling brooks, there lived a little girl named Lily. Lily was a bright and imaginative child who loved to dream and create stories in her mind. One sunny morning, as Lily ventured into the forest near her house, she stumbled upon a hidden path. Curiosity struck her, and she decided to follow it, not knowing where it would lead. The path twisted and turned..."}
+        </p>
+        <button
+          onClick={resetStory}
+          className="mt-4 mx-4 px-4 py-2 text-white bg-orange-400 rounded-full hover:bg-red-600"
+        >
+          Generate New Story
+        </button>
+      </div>
 
-
+      {/* Audio Section */}
+      {audio && (
+        <div className="mb-4">
+          <audio ref={audioRef} controls src={`${audio}`} className="w-full" />
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <>
-    {/* <DynamicBackground imageUrl={ story ? Image1 : 'hello'} /> */}
       <div className="bg-[url('../../public/background.png')] bg-cover min-h-screen">
         {/* Status Bar */}
         <div className="text-white p-4 flex justify-between text-xs">
@@ -89,34 +122,25 @@ export default function StoryPage() {
           <div>Signal</div>
         </div>
 
-        {/* Header Icons */}
-        {/* <div className="flex justify-between p-4">
-          <div>Menu icon</div>
-          <div>Notification icon</div>
-        </div> */}
-
-        {/* Main Title */}
-      
-
         {/* Content Card */}
-        <div className="my-1  py-2">
-          <div className="flex justify-end lg:mr-6">
-            {!story ? (
-              <>
-               
-          
+        <div className="  ">
+          {!story ? (
+            <>
+              <div className="flex justify-end lg:mr-6">
                 <form
                   onSubmit={handleSubmit}
                   className="p-2 lg:mr-6 rounded-xl  lg:w-1/3  "
                 >
-                    <div className=" text-orange-300 p-4">
-          <h1 className="text-4xl font-bold">Tontomo</h1>
-        </div>
-           <h3 className="flex justify-between px-4 text-gray-300 text-md">
-          {/* <div>Menu icon</div> */}
-          What do you want to be today? A brave knight, a beautiful princess, or a daring astronaut zooming through space? Why not all of them?
-          {/* <div>Notification icon</div> */}
-        </h3>
+                  <div className=" text-orange-300 p-4">
+                    <h1 className="text-4xl font-bold">Tontomo</h1>
+                  </div>
+                  <h3 className="flex justify-between px-4 text-gray-300 text-md">
+                    {/* <div>Menu icon</div> */}
+                    What do you want to be today? A brave knight, a beautiful
+                    princess, or a daring astronaut zooming through space? Why
+                    not all of them?
+                    {/* <div>Notification icon</div> */}
+                  </h3>
                   <div className="m-4 rounded-xl ">
                     <label
                       htmlFor="prompt"
@@ -146,47 +170,82 @@ export default function StoryPage() {
                     Back
                   </button>
                 </form>
-              </>
-            ) : (
-              <div className="flex flex-col items-center bg-sky-950 rounded">
+              </div>
+            </>
+          ) : (
+            <>
+              {/* {carousel} */}
+
+              <div className="">
                 {story && (
-                  <div className="p-2 text-white rounded shadow-md w-full max-w-2xl">
+                  <div className="">
                     {/* Images Section */}
 
-                    <Slider {...settings}>
-  
-    </Slider>
+                    <div className="container xl:px-40 mx-auto xl:flex  border ">
+                      <div className="w-full h-full lg:w-1/2  border">
+                        {/* <Slider {...settings}> */}
+                          {images.length == 0 ? 
 
+<div className="">
 
+  <div  className="border rounded">
+    <Image
+      alt=""
+      width={650}
+      height={650}
+      src={flower}
+    />
+  </div>
+</div>
 
-                    {images.length > 0 && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                        {images.map((img, index) => (
-                          <div key={index} className="border rounded">
-                            {/* Replace with actual Image component */}
-                            <Image
-                              alt=""
-                              // width={512}
-                              // height={512}
-                               width={300}
-                               height={300}
-                             //layout="fill"
-                              src={`data:image/jpeg;base64,${img}`}
-                            />
-                          </div>
-                        ))}
+: 
+                          
+                          
+                          images.length > 0 && (
+                            <div className="">
+                              {images.map((img, index) => (
+                                <div key={index} className="border rounded">
+                                  <Image
+                                    alt=""
+                                    width={650}
+                                    height={650}
+                                    src={`data:image/jpeg;base64,${img}`}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        {/* </Slider> */}
                       </div>
-                    )}
 
-                    {/* Story Section */}
-                    <div className="max-h-[40vh] overflow-y-auto mb-4 border-1">
-                      <p className="text-lg text-white">
-                        {story ? story : "Once upon a time..."}
-                      </p>
-                    </div>
+                      <div className="w-full lg:w-1/2 p-6 overflow-y-auto  border-1 bg-orange-200 ">
+                        <div className="  p-4 text-stone-900">
+                          <h1 className="text-4xl font-bold">
+                            {prompt ? prompt : "Tontomo"}
+                          </h1>
+                        </div>
+                        <p className="text-lg text-stone-900 px-4">
+                          {story
+                            ? story
+                            : "Once upon a time, in a small village nestled amongst rolling hills and babbling brooks, there lived a little girl named Lily. Lily was a bright and imaginative child who loved to dream and create stories in her mind. One sunny morning, as Lily ventured into the forest near her house, she stumbled upon a hidden path. Curiosity struck her, and she decided to follow it, not knowing where it would lead. The path twisted and turned..."}
+                        </p>
+                        <button
+                          onClick={resetStory}
+                          className="mt-4 mx-4 px-4 py-2 text-white bg-orange-400 rounded-full hover:bg-red-600"
+                        >
+                          Generate New Story
+                        </button>
+                      </div>
 
-                    {/* Audio Section */}
-                    {audio && (
+                      {/* Story Section */}
+                      {/* <div className="max-h-[40vh] overflow-y-auto mb-4 border-1">
+                        <p className="text-lg text-white">
+                          {story ? story : "Once upon a time..."}
+                        </p>
+                      </div> */}
+
+                      {/* Audio Section */}
+                      {/* {audio && (
                       <div className="mb-4">
                         <audio
                           ref={audioRef}
@@ -195,20 +254,21 @@ export default function StoryPage() {
                           className="w-full"
                         />
                       </div>
-                    )}
+                    )} */}
 
-                    {/* Reset Button */}
-                    <button
+                      {/* Reset Button */}
+                      {/* <button
                       onClick={resetStory}
                       className="mt-4 px-4 py-2 text-white bg-orange-400 rounded-full hover:bg-red-600"
                     >
                       Generate New Story
-                    </button>
+                    </button> */}
+                    </div>
                   </div>
                 )}
               </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
 
         {/* Bottom Navigation */}
