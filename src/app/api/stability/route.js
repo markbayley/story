@@ -32,7 +32,7 @@ async function getPrompts(story) {
     messages: [
       {
         role: "system",
-        content: `You are a friendly assistant. Your job is to generate image prompts based on the following story. Each prompt should be a short descriptive sentence. Please list all three prompts, separated by a "|" symbol. For example, "a bright sunny day|a dark spooky night|a bustling city street".`,
+        content: `You are a friendly assistant. Your job is to generate image colorful simple prompts based on the following kids bedtime story. Each prompt should be a short descriptive sentence. Please list all three prompts, separated by a "|" symbol. For example, "a bright sunny day|a dark spooky night|a bustling city street".`,
       },
       {
         role: "user",
