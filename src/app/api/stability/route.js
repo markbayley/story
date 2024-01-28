@@ -5,6 +5,9 @@ export async function POST(req) {
   const { story } = body;
   let allImages = [];
   const prompts = await getPrompts(story);
+
+  console.log("story-prompts", prompts);
+
   for (let i = 0; i < prompts.length; i++) {
     const text_prompts = [{ text: prompts[i] }];
     const response = await fetch(
