@@ -13,17 +13,20 @@ return NextResponse.json({ message: "Ingredients not found." });
     messages: [
       {
         role: "system",
-        content: `write a children's short story about: ${prompt}. `,
+       // content:  `An imaginative title of the story using words in the ${prompt} `,
+        content: `You are a talented writer of fairy tales. Write a very short children's story about: ${prompt}. 
+        Include an imaginative three word title using words in the ${prompt}`,
       },
       {
         role: "user",
         content: `prompt: ${prompt}\n`,
       },
     ],
-    max_tokens: 200,
+    max_tokens: 500,
   });
 
   return NextResponse.json({
+    //title: response.choices[0]?.message?.content?.trim() || "",
     story: response.choices[0]?.message?.content?.trim() || "",
   });
 }
