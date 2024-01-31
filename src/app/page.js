@@ -29,11 +29,11 @@ export default function StoryPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-        setMessage("Creating Story");
+        setMessage("Creating Story...");
         const storyData = await fetchStory(prompt);
         setStory(storyData.story);
 
-        setMessage("Creating Image");
+        setMessage("Creating Image...");
         const imageData = await fetchImages(storyData.story);
         setImages(imageData.images);
       
@@ -70,7 +70,7 @@ export default function StoryPage() {
         </div>
 
         {/* Bottom Navigation */}
-        <BottomNavigation />
+        {/* <BottomNavigation /> */}
       </div>
     </>
   );

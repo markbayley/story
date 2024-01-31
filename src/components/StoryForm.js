@@ -5,7 +5,7 @@ export const StoryForm = ({ prompt, setPrompt, handleSubmit, message }) => {
           {/* Form content here... */}
 
           <div className=" text-orange-300 p-4">
-                    <h1 className="text-4xl font-bold">
+                    <h1 className="text-5xl font-bold antiqua">
                       {message ? message : "Welcome!"}
                     </h1>
                   </div>
@@ -29,11 +29,11 @@ export const StoryForm = ({ prompt, setPrompt, handleSubmit, message }) => {
                       placeholder="A magical castle in the sky"
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
-                      className="p-2 w-full md:w-2/3 lg:w-full rounded-md border-gray-300 bg-gray-100 text-black"
+                      className="p-2 w-full md:w-2/3 lg:w-full rounded-md border-gray-300 bg-gray-100 text-black "
                     />
                   </div>
 
-          <button type="submit" className="px-4 py-2 m-4 text-white bg-orange-300 rounded-full hover:bg-orange-400">
+          <button type="submit" className="px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400">
             Create Story
           </button>
         </form>
