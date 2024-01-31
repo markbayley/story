@@ -22,7 +22,9 @@ export async function POST(req) {
       }
     );
     const images = await response.json();
+    console.log("routeImages", images)
     allImages.push(images.artifacts[0].base64);
+    console.log("allImages", allImages)
   }
   return NextResponse.json({ images: allImages });
 }

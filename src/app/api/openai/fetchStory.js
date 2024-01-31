@@ -16,7 +16,7 @@ export const fetchStory = async (prompt) => {
   
       // Parse the JSON response
       const data = await response.json();
-  
+      console.log("data-Story", data)
       // Return the story data
       return data; // Assuming the response contains the story
     } catch (error) {

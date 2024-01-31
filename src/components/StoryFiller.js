@@ -1,9 +1,9 @@
-import React from 'react'
 
-export const StoryFiller = () => {
+
+export const StoryFiller = ({loading}) => {
   return (
-    <div className=" shadow rounded-md pl-4 md:max-w-md lg:max-w-xl w-full">
-    <div className="animate-pulse flex space-x-4">
+    <div className={ loading ? "animate-pulse shadow rounded-md pl-4 md:max-w-md lg:max-w-xl w-full" : "shadow rounded-md pl-4 md:max-w-md lg:max-w-xl w-full" }>
+    <div className=" flex space-x-4">
       <div className="rounded-full bg-stone-700 h-10 w-10"></div>
       <div className="flex-1 space-y-6 py-1">
         <div className="h-2 bg-stone-700 rounded"></div>
@@ -16,7 +16,7 @@ export const StoryFiller = () => {
         </div>
       </div>
     </div>
-    <div className="animate-pulse flex space-x-4">
+    <div className="flex space-x-4">
       {/* <div class="rounded-full bg-stone-700 h-10 w-10"></div> */}
       <div className="flex-1 space-y-6 py-1">
         <div className="h-2 bg-stone-700 rounded"></div>
@@ -29,7 +29,7 @@ export const StoryFiller = () => {
         </div>
       </div>
     </div>
-    <div className="animate-pulse flex space-x-4">
+    <div className="flex space-x-4">
       {/* <div class="rounded-full bg-stone-700 h-10 w-10"></div> */}
       <div className="flex-1 space-y-6 py-1">
         <div className="h-2 bg-stone-700 rounded"></div>
@@ -42,7 +42,7 @@ export const StoryFiller = () => {
         </div>
       </div>
     </div>
-    <div className="animate-pulse flex space-x-4">
+    <div className="flex space-x-4">
       {/* <div class="rounded-full bg-stone-700 h-10 w-10"></div> */}
       <div className="flex-1 space-y-6 py-1">
         {/* <div class="h-2 bg-stone-700 rounded"></div> */}
