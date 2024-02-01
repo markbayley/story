@@ -38,7 +38,7 @@ export const StoryDisplay = ({
   };
 
   return (
-    <div className="fade-in ">
+    <div className="fade-in sm:mt-4">
    
       <div
         className="lg:mx-[5%] xl:mx-[10%] border-r border-l-1 rounded-xl 

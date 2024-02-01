@@ -19,10 +19,10 @@ export const StoryForm = ({
         <div className=" text-orange-300 p-4">
           <h1 className="text-5xl font-bold antiqua">Welcome</h1>
         </div>
-        <h3 className="flex justify-between px-4 text-gray-300 text-md">
+        <h3 className="flex justify-between px-4 text-gray-300 text-md roboto font-light">
           {/* <div>Menu icon</div> */}
-          Create stories with AI. What do you want to be today? A brave knight,
-          a beautiful princess?
+          Create stories with AI. <br /><br />
+          What do you want to read about? A friendly dinosaur? A beautiful princess in a castle?
           {/* <div>Notification icon</div> */}
         </h3>
 

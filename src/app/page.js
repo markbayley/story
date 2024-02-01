@@ -9,6 +9,9 @@ import { StoryForm } from "../components/StoryForm";
 import { StoryDisplay } from "../components/StoryDisplay";
 import { BottomNavigation } from "../components/BottomNavigation";
 
+
+import { myBooks } from "./data.js"
+
 import {
   getFirestore,
   collection,
@@ -37,6 +40,8 @@ export default function StoryPage() {
 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const [books, setBooks] = useState([]);
 
   useEffect(() => {
     if (audio) {
@@ -185,17 +190,21 @@ export default function StoryPage() {
     querySnapshot.forEach((doc) => {
       books.push({ id: doc.id, ...doc.data() });
     });
-    return books;
+    console.log("books", books)
+    setBooks(books)
+    return books
+     
   };
+
+
+
+
+
 
   return (
     <>
-      <button
-        onClick={handleSaveBook}
-        className="text-white p-2 m-2 hover:text-gray-500"
-      >
-        Save Story
-      </button>
+    
+
       <div className="bg-[url('../../public/background.png')] bg-cover min-h-screen">
         {/* Status Bar */}
         <StatusBar
@@ -205,6 +214,9 @@ export default function StoryPage() {
           setLoading={setLoading}
           open={open}
           setOpen={setOpen}
+          handleSaveBook={handleSaveBook}
+          getBooksForUser={getBooksForUser}
+          userId={userId}
         />
 
         {/* Main */}
@@ -220,6 +232,10 @@ export default function StoryPage() {
                 message={message}
                 story={story}
               />
+               
+
+      {/* Bottom Navigation */}
+        <BottomNavigation myBooks={myBooks} books={books} extractTitleFromStory={extractTitleFromStory} />
             </>
           ) : (
             <StoryDisplay
@@ -235,8 +251,7 @@ export default function StoryPage() {
           )}
         </div>
 
-        {/* Bottom Navigation */}
-        {/* <BottomNavigation /> */}
+      
       </div>
     </>
   );
