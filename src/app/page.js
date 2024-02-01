@@ -1,16 +1,15 @@
 "use client";
 // Import necessary libraries
 import { useEffect, useRef, useState } from "react";
-import "./styles.css";
 import { fetchStory } from "./api/openai/fetchStory";
 import { fetchImages } from "./api/stability/fetchImages";
 import { StatusBar } from "../components/StatusBar";
 import { StoryForm } from "../components/StoryForm";
 import { StoryDisplay } from "../components/StoryDisplay";
 import { BottomNavigation } from "../components/BottomNavigation";
+import "./styles.css";
 
-
-import { myBooks } from "./data.js"
+import { myBooks } from "./data.js";
 
 import {
   getFirestore,
@@ -28,6 +27,7 @@ import { auth } from "@/app/firebase/config";
 // Main Component
 export default function StoryPage() {
   const [userId, setUserId] = useState();
+  console.log(userId);
   const [bookId, setBookId] = useState();
 
   const [prompt, setPrompt] = useState("");
@@ -40,29 +40,44 @@ export default function StoryPage() {
 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    if (audio) {
-      audioRef.current.play();
+    if (userId) {
+      const fetchBooks = async () => {
+        const userBooks = await getBooksForUser(userId);
+        setBooks(userBooks);
+      };
+
+      fetchBooks();
     }
-  }, [audio]);
+  }, [userId]); // This effect depends on userId, so it runs when userId changes
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    //   const delay = async (ms) => {
+    //     return new Promise((resolve) =>
+    //         setTimeout(resolve, ms));
+    // };
+
     try {
       setMessage("Creating Story...");
+      // await delay(2000);
+
       setLoading(true);
       const storyData = await fetchStory(prompt);
+      setMessage("Story Created!");
       setStory(storyData.story);
       console.log("storyData", storyData, "story", story);
 
-      setMessage("Creating Image...");
+      setMessage("Creating Images...");
       const imageData = await fetchImages(storyData.story);
       setImages(imageData.images);
       console.log("imageData.images", imageData.images);
-
+      setMessage("Images Finished!");
       // Extract title and save to local storage
       const storyTitle = extractTitleFromStory(storyData.story);
       console.log("storyTitle", storyTitle);
@@ -75,7 +90,7 @@ export default function StoryPage() {
       setMessage("No Credits");
       setLoading(false);
     }
-    setMessage("Story Created");
+    setMessage("Open Your Story");
     setLoading(false);
   };
 
@@ -134,9 +149,8 @@ export default function StoryPage() {
     return { userId, bookId, imageUrls };
   };
 
-  console.log("images", images);
-
   const handleSaveBook = async () => {
+    setProcessing(true);
     try {
       const validImages = images.filter((image) => image != null); // Filter out undefined or null images
       const convertedImages = validImages.map((base64Image) =>
@@ -148,7 +162,9 @@ export default function StoryPage() {
       await saveBookToFirestore(userId, story, imageUrls, bookId);
     } catch (error) {
       console.error("Error uploading images:", error);
+      setProcessing(false);
     }
+    setProcessing(false);
   };
 
   const saveBookToFirestore = async (userId, story, imageUrls, bookId) => {
@@ -183,6 +199,7 @@ export default function StoryPage() {
   ////
 
   const getBooksForUser = async (userId) => {
+    setProcessing(true);
     const db = getFirestore();
     const q = query(collection(db, "books"), where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
@@ -190,22 +207,24 @@ export default function StoryPage() {
     querySnapshot.forEach((doc) => {
       books.push({ id: doc.id, ...doc.data() });
     });
-    console.log("books", books)
-    setBooks(books)
-    return books
-     
+    console.log("books", books);
+    setBooks(books);
+    setProcessing(false);
+    return books;
   };
 
-
-
-
-
+  useEffect(() => {
+    if (audio) {
+      audioRef.current.play();
+    }
+    // if (userId) {
+    //   getBooksForUser(userId)
+    // }
+  }, [audio, books]);
 
   return (
     <>
-    
-
-      <div className="bg-[url('../../public/background.png')] bg-cover min-h-screen">
+      <div className="bg-[url('../../public/background3.png')] bg-cover min-h-screen">
         {/* Status Bar */}
         <StatusBar
           message={message}
@@ -217,6 +236,7 @@ export default function StoryPage() {
           handleSaveBook={handleSaveBook}
           getBooksForUser={getBooksForUser}
           userId={userId}
+          processing={processing}
         />
 
         {/* Main */}
@@ -232,10 +252,13 @@ export default function StoryPage() {
                 message={message}
                 story={story}
               />
-               
 
-      {/* Bottom Navigation */}
-        <BottomNavigation myBooks={myBooks} books={books} extractTitleFromStory={extractTitleFromStory} />
+              {/* Bottom Navigation */}
+              <BottomNavigation
+                myBooks={myBooks}
+                books={books}
+                extractTitleFromStory={extractTitleFromStory}
+              />
             </>
           ) : (
             <StoryDisplay
@@ -250,8 +273,6 @@ export default function StoryPage() {
             />
           )}
         </div>
-
-      
       </div>
     </>
   );

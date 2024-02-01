@@ -17,7 +17,7 @@ export const StoryForm = ({
         {/* Form content here... */}
 
         <div className=" text-orange-300 p-4">
-          <h1 className="text-5xl font-bold antiqua">Welcome</h1>
+          <h1 className="font-bold antiqua text-5xl ">Welcome</h1>
         </div>
         <h3 className="flex justify-between px-4 text-gray-300 text-md roboto font-light">
           {/* <div>Menu icon</div> */}

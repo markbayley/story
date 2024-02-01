@@ -4,8 +4,6 @@ import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 
-
-
 import {
   ArrowPathIcon,
   ArrowUpTrayIcon,
@@ -26,7 +24,8 @@ export const StatusBar = ({
   setOpen,
   handleSaveBook,
   getBooksForUser,
-  userId
+  userId,
+  processing,
 }) => {
   const [user] = useAuthState(auth);
   const router = useRouter();
@@ -34,14 +33,10 @@ export const StatusBar = ({
 
   // console.log({ user });
 
-
-
   // if (user) {
   //   const uid = user.uid;
   //   console.log("uid", uid)
   // }
-
-
 
   // console.log("uid", uid);
   // if (!user && !userSession) {
@@ -62,52 +57,45 @@ export const StatusBar = ({
       {/* Reset Button */}
       {/* <HomeIcon className="h-6 w-6 mx-2 hover:text-gray-500" /> */}
 
-
-
-
-
-
-
-
       <button
         onClick={resetStory}
-        className="px-2  text-white hover:text-gray-500"
+        className="px-2  hover:text-gray-500"
       >
-        <ArrowPathIcon className="h-6 w-6 mx-2 " />
-        Clear
+        <HomeIcon className="h-6 w-6 mx-2 hover:text-gray-500" />
+        Home
       </button>
-  
-      <button>
+
+      <button className="hover:text-gray-500">
         {" "}
-        <CurrencyDollarIcon className="h-6 w-6 mx-2 hover:text-gray-500" />
+        <CurrencyDollarIcon className="h-6 w-6 mx-2 " />
         Credits
       </button>
       {/* Reset Button */}
 
-
       <button
         onClick={handleSaveBook}
-        className="text-white px-2 hover:text-gray-500"
+        className={
+          processing
+            ? "animate-pulse text-orange-400 px-2 hover:text-orange-400"
+            : "text-white px-2 hover:text-gray-500"
+        }
       >
-         <ArrowUpTrayIcon className="h-6 w-6 mx-2 " />
-        Save
+        <ArrowUpTrayIcon className="h-6 w-6 mx-2 " />
+        {processing ? "Saving" : "Save"}
       </button>
 
-      <button
+      {/* <button
         onClick={() => getBooksForUser(userId)}
         className="text-white px-2  hover:text-gray-500"
       >
-         <HomeIcon className="h-6 w-6 mx-2 hover:text-gray-500" />
+          <ArrowPathIcon className="h-6 w-6 mx-2 " />
         Fetch
-      </button>
-
-
-
+      </button> */}
 
       {open ? (
         <button
           onClick={() => setOpen(false)}
-          className="px-2  text-white hover:text-gray-500"
+          className="px-2 hover:text-gray-500"
         >
           <XMarkIcon className="h-6 w-6 " />
           Close
@@ -115,7 +103,7 @@ export const StatusBar = ({
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="px-2 text-white hover:text-gray-500"
+          className="px-2 hover:text-gray-500"
         >
           <BookOpenIcon className="h-6 w-6 mx-2" />
           Open
@@ -123,17 +111,20 @@ export const StatusBar = ({
       )}
 
       {user ? (
-        <button
+        <button className="hover:text-gray-500"
           onClick={() => {
             signOut(auth);
             sessionStorage.removeItem("user");
           }}
         >
-          <UserCircleIcon className="h-6 w-6 mx-2 hover:text-gray-500" />
+          <UserCircleIcon className="h-6 w-6 mx-2 " />
           Log out
         </button>
       ) : (
-        <button onClick={handleUser}><UserCircleIcon className="h-6 w-6 mx-2 hover:text-gray-500" />Login</button>
+        <button onClick={handleUser}>
+          <UserCircleIcon className="h-6 w-6 mx-2 " />
+          Login
+        </button>
       )}
     </div>
   );

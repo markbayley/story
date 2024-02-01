@@ -1,16 +1,15 @@
 /* General Styles */
 
 @import url('https://fonts.googleapis.com/css2?family=Glass+Antiqua&family=Roboto+Slab&display=swap');
-body, html, h1, p, div {
+body, html {
     margin: 0;
     padding: 0;
-    /* font-family: 'Roboto Slab', serif;  */
   }
   
-  .app {
+  /* .app {
     display: flex;
     overflow-x: auto;
-  }
+  } */
 
   .antiqua {
     font-family: 'Glass Antiqua', cursive;

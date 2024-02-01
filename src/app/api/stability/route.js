@@ -37,7 +37,10 @@ async function getPrompts(story) {
     messages: [
       {
         role: "system",
-        content: `Your job is to generate colorful, simple image prompts for illustrations based on the following kids bedtime story. Each prompt should be a short descriptive sentence. Please list all three prompts, separated by a "|" symbol. For example, "a bright sunny day|a dark spooky night|a bustling city street".`,
+        content: `Your job is to generate colorful, simple image prompts for illustrations based on the following kids bedtime story.
+         Each prompt should be a short descriptive sentence.
+          Please list all five prompts, separated by a "|" symbol. For example,
+           "a boy playing on a bright sunny day at the park|a black cat near a dark spooky old house at night|a beautifull woman crossing a bustling city street|a red canoe drifting on a peacefull lake|a boy with a friendly little pet dinosaur".`,
       },
       {
         role: "user",

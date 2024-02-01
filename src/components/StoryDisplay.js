@@ -13,7 +13,6 @@ export const StoryDisplay = ({
   audio,
   audioRef,
   loading,
- 
 }) => {
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -39,7 +38,6 @@ export const StoryDisplay = ({
 
   return (
     <div className="fade-in sm:mt-4">
-   
       <div
         className="lg:mx-[5%] xl:mx-[10%] border-r border-l-1 rounded-xl 
        bg-orange-200
@@ -85,7 +83,7 @@ export const StoryDisplay = ({
       <div className="demoPage">Page 3</div>
       <div className="demoPage">Page 4</div> */}
 
-            {!story && <StoryFiller loading={loading}/>}
+            {!story && <StoryFiller loading={loading} />}
             <div className="text-stone-900 xs:pr-4 lg:pr-0 lg:pl-4  text-2xl xl:text-3xl w-full h-50">
               {page == 0 && story
                 ? "Once " + story.substring(0, 450).split("Once")[1] + "..."
