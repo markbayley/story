@@ -43,6 +43,8 @@ export default function StoryPage() {
   const [processing, setProcessing] = useState(false);
 
   const [books, setBooks] = useState([]);
+  const [selectedBook, setSelectedBook] = useState(null);
+
 
   useEffect(() => {
     if (userId) {
@@ -133,21 +135,24 @@ export default function StoryPage() {
   };
 
   // Function to upload images
-  const uploadImages = async (images) => {
+  const uploadImages = async (images, userId) => {
     const storage = getStorage();
     const bookId = generateBookId();
-
     let imageUrls = [];
-
+  
     for (const image of images) {
-      const imageRef = ref(storage, `images/${userId}/${bookId}/${image.name}`);
-      await uploadBytes(imageRef, image);
+      const uniqueImageId = `${bookId}_${Date.now()}`; // Ensure unique ID for each image
+      const imageRef = ref(storage, `images/${userId}/${bookId}/${uniqueImageId}`);
+      await uploadBytes(imageRef, image); // Ensure the image is awaited
       const url = await getDownloadURL(imageRef);
       imageUrls.push(url);
     }
-
-    return { userId, bookId, imageUrls };
+  
+    return { bookId, imageUrls };
   };
+
+
+  
 
   const handleSaveBook = async () => {
     setProcessing(true);
@@ -156,8 +161,10 @@ export default function StoryPage() {
       const convertedImages = validImages.map((base64Image) =>
         base64ToBlob(base64Image, "image/jpeg")
       );
+      console.log("Converted images for upload:", convertedImages);
+      const { bookId, imageUrls } = await uploadImages(convertedImages, userId);
+   
 
-      const { bookId, imageUrls } = await uploadImages(convertedImages);
       // Now use bookId and imageUrls to save the book's data to Firestore
       await saveBookToFirestore(userId, story, imageUrls, bookId);
     } catch (error) {
@@ -171,11 +178,12 @@ export default function StoryPage() {
     const db = getFirestore();
     const book = {
       userId,
-      bookId,
+      // bookId,
       story,
       imageUrls,
       createdAt: new Date(),
     };
+    console.log("Saving book with image URLs:", imageUrls);
     await addDoc(collection(db, "books"), book);
   };
 
@@ -222,6 +230,22 @@ export default function StoryPage() {
     // }
   }, [audio, books]);
 
+
+  const handlePreviewClick = (bookId) => {
+    const book = books.find((b) => b.id === bookId);
+    console.log("Selected book images:", book?.imageUrls); // Verify that images exist
+    if (book) {
+      setSelectedBook(book);
+    }
+ 
+    setOpen(true)
+    setPage(0)
+  };
+  
+
+
+
+
   return (
     <>
       <div className="bg-[url('../../public/background3.png')] bg-cover min-h-screen">
@@ -258,12 +282,15 @@ export default function StoryPage() {
                 myBooks={myBooks}
                 books={books}
                 extractTitleFromStory={extractTitleFromStory}
+                handlePreviewClick={handlePreviewClick}
               />
             </>
           ) : (
             <StoryDisplay
-              story={story}
-              images={images}
+              // story={story}
+              // images={images}
+              story={selectedBook?.story}
+              images={selectedBook?.imageUrls}
               page={page}
               setPage={setPage}
               resetStory={resetStory}

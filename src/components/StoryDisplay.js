@@ -1,7 +1,5 @@
 import Image from "next/image";
-import HTMLFlipBook from "react-pageflip";
 import pic7 from "/public/pic7.jpg";
-import pic8 from "/public/pic8.jpg";
 import { StoryFiller } from "./StoryFiller";
 
 export const StoryDisplay = ({
@@ -9,7 +7,6 @@ export const StoryDisplay = ({
   images,
   page,
   setPage,
-  resetStory,
   audio,
   audioRef,
   loading,
@@ -21,9 +18,9 @@ export const StoryDisplay = ({
   };
   // Helper Component for Image Display
   const ImageDisplay = ({ images, page }) => {
-    const imageSrc =
+    const imageSrc = images &&
       images.length > 0
-        ? `data:image/jpeg;base64,${images[page]}`
+        ? images[page]
         : getDefaultImage(page);
     return (
       <Image
@@ -77,12 +74,6 @@ export const StoryDisplay = ({
               </h1>
             </div>
 
-            {/* <HTMLFlipBook width={1000} height={500}>
-      <div className="demoPage">Page 1</div>
-      <div className="demoPage">Page 2</div>
-      <div className="demoPage">Page 3</div>
-      <div className="demoPage">Page 4</div> */}
-
             {!story && <StoryFiller loading={loading} />}
             <div className="text-stone-900 xs:pr-4 lg:pr-0 lg:pl-4  text-2xl xl:text-3xl w-full h-50">
               {page == 0 && story
@@ -95,9 +86,8 @@ export const StoryDisplay = ({
                 ? "..." + story.substring(1350, 1800) + "..."
                 : page == 4
                 ? "..." + story.substring(1800, 2250) + "..."
-                : page == 5
-                ? "..." + story.substring(2250, 2700) + "..."
-                : "..." + story.substring(2700, 3150)}
+                : "..." + story.substring(2250, 2700) + "..."}
+             
             </div>
             {/* </HTMLFlipBook> */}
             {/* Controls Section */}
