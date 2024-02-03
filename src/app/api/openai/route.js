@@ -14,7 +14,9 @@ export async function POST(req) {
         role: "system",
         // content:  `An imaginative title of the story using words in the ${prompt} `,
         content: `You are a talented writer of fairy tales. Write a very short children's story about: ${prompt}. 
-        Include an imaginative three word title using words in the ${prompt}, but don't include the word 'Title'. Finish the end of the story with "~The End~"`,
+        Give the story with a three word title using words in the ${prompt}, but don't include the word 'Title'.
+        After the title, always begin the story with "Once upon a time ".
+        Finish the end of the story with "~The End~"`,
       },
       {
         role: "user",

@@ -10,6 +10,8 @@ export const StoryDisplay = ({
   audio,
   audioRef,
   loading,
+  storyUnsaved,
+  imagesUnsaved,
 }) => {
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -17,21 +19,39 @@ export const StoryDisplay = ({
     return defaultImages[page] || defaultImages[0];
   };
   // Helper Component for Image Display
-  const ImageDisplay = ({ images, page }) => {
-    const imageSrc = images &&
-      images.length > 0
+  const ImageDisplay = ({ images, imagesUnsaved, page }) => {
+    const imageSrc =
+      images || (imagesUnsaved && images?.length > 0)
         ? images[page]
+        : imagesUnsaved?.length > 0
+        ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
         : getDefaultImage(page);
     return (
-      <Image
+      <div className="flex justify-center items-center relative">
+    { loading && <div className="spinner w-full h-full absolute"></div> }
+    { imageSrc &&  
+    <Image
         alt=""
         style={{ borderRadius: "5px 5px 5px 5px", opacity: "0.85" }}
         width={650}
         height={650}
         src={imageSrc}
-      />
+      /> }
+      </div>
     );
   };
+
+  const handlePage = (direction) => {
+    let max = 5;
+    let min = 0;
+    if (direction === "down" && page > min) {
+      setPage(page - 1);
+    }
+    else if (direction === "up" && page < max) {
+      setPage(page + 1);
+    }
+  };
+  
 
   return (
     <div className="fade-in sm:mt-4">
@@ -53,7 +73,11 @@ export const StoryDisplay = ({
               shadow-lg border-b-2"
           >
             <div className="m-4  rounded-tl-xl rounded-bl-xl ">
-              <ImageDisplay images={images} page={page} />
+              <ImageDisplay
+                images={images}
+                page={page}
+                imagesUnsaved={imagesUnsaved}
+              />
             </div>
           </div>
 
@@ -70,25 +94,47 @@ export const StoryDisplay = ({
           >
             <div className="  lg:px-4 pb-4 text-stone-900  ">
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold capitalize antiqua">
-                {story ? story.split("Once")[0] : "Once Upon A Time..."}
+                {story
+                  ? story?.split("Once")[0]
+                  : storyUnsaved
+                  ? storyUnsaved?.split("Once")[0]
+                  : "Once Upon A Time..."}
               </h1>
             </div>
 
-            {!story && <StoryFiller loading={loading} />}
-            <div className="text-stone-900 xs:pr-4 lg:pr-0 lg:pl-4  text-2xl xl:text-3xl w-full h-50">
-              {page == 0 && story
-                ? "Once " + story.substring(0, 450).split("Once")[1] + "..."
-                : page == 1
-                ? "..." + story.substring(450, 900) + "..."
-                : page == 2
-                ? "..." + story.substring(900, 1350) + "..."
-                : page == 3
-                ? "..." + story.substring(1350, 1800) + "..."
-                : page == 4
-                ? "..." + story.substring(1800, 2250) + "..."
-                : "..." + story.substring(2250, 2700) + "..."}
-             
-            </div>
+            {!story && !storyUnsaved ? (
+              <StoryFiller loading={loading} />
+            ) : story && !storyUnsaved ? (
+              <div className="text-stone-900 xs:pr-4 lg:pr-0 lg:pl-4  text-2xl xl:text-3xl w-full h-50">
+                {page == 0
+                  ? "Once " + story?.substring(0, 450).split("Once")[1] + "..."
+                  : page == 1
+                  ? "..." + story?.substring(450, 900) + "..."
+                  : page == 2
+                  ? "..." + story?.substring(900, 1350) + "..."
+                  : page == 3
+                  ? "..." + story?.substring(1350, 1800) + "..."
+                  : page == 4
+                  ? "..." + story?.substring(1800, 2250) + "..."
+                  : "..." + story?.substring(2250, 2700) + "..."}
+              </div>
+            ) : (
+              <div className="text-stone-900 xs:pr-4 lg:pr-0 lg:pl-4  text-2xl xl:text-3xl w-full h-50">
+                {page == 0
+                  ? "Once " +
+                    storyUnsaved?.substring(0, 450).split("Once")[1] +
+                    "..."
+                  : page == 1
+                  ? "..." + storyUnsaved?.substring(450, 900) + "..."
+                  : page == 2
+                  ? "..." + storyUnsaved?.substring(900, 1350) + "..."
+                  : page == 3
+                  ? "..." + storyUnsaved?.substring(1350, 1800) + "..."
+                  : page == 4
+                  ? "..." + storyUnsaved?.substring(1800, 2250) + "..."
+                  : "..." + storyUnsaved?.substring(2250, 2700) + "..."}
+              </div>
+            )}
             {/* </HTMLFlipBook> */}
             {/* Controls Section */}
             <div className="flex-1 flex items-end pb-6">
@@ -109,27 +155,27 @@ export const StoryDisplay = ({
                 </div>
 
                 <div className="w-1/2 text-right">
-                  <button
-                    onClick={() => setPage(page - 1)}
-                    className="mt-3 px-4 py-1 text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-                  >
-                    {"<"}
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-1 mx-0 text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-                  >
-                    {"Page " + page}
-                  </button>
+  <button
+    onClick={() => handlePage("down")}
+    className="mt-3 px-4 py-1 text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+  >
+    {"<"}
+  </button>
+  <button
+    type="submit"
+    className="px-4 py-1 mx-0 text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+  >
+    {"Page " + page}
+  </button>
+  <button
+    onClick={() => handlePage("up")}
+    type="submit"
+    className="px-4 py-1  text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+  >
+    {">"}
+  </button>
+</div>
 
-                  <button
-                    onClick={() => setPage(page + 1)}
-                    type="submit"
-                    className="px-4 py-1  text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-                  >
-                    {">"}
-                  </button>
-                </div>
               </div>
             </div>
           </div>

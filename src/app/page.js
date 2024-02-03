@@ -28,7 +28,6 @@ import { auth } from "@/app/firebase/config";
 export default function StoryPage() {
   const [userId, setUserId] = useState();
   console.log(userId);
-  const [bookId, setBookId] = useState();
 
   const [prompt, setPrompt] = useState("");
   const [story, setStory] = useState("");
@@ -47,15 +46,8 @@ export default function StoryPage() {
 
 
   useEffect(() => {
-    if (userId) {
-      const fetchBooks = async () => {
-        const userBooks = await getBooksForUser(userId);
-        setBooks(userBooks);
-      };
-
-      fetchBooks();
-    }
-  }, [userId]); // This effect depends on userId, so it runs when userId changes
+    fetchBooks();
+  }, [userId]); // Fetch books on component mount or when userId changes
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -74,6 +66,7 @@ export default function StoryPage() {
       setMessage("Story Created!");
       setStory(storyData.story);
       console.log("storyData", storyData, "story", story);
+      setOpen(true)
 
       setMessage("Creating Images...");
       const imageData = await fetchImages(storyData.story);
@@ -167,6 +160,8 @@ export default function StoryPage() {
 
       // Now use bookId and imageUrls to save the book's data to Firestore
       await saveBookToFirestore(userId, story, imageUrls, bookId);
+         // After saving the book, refetch the books list
+    fetchBooks();
     } catch (error) {
       console.error("Error uploading images:", error);
       setProcessing(false);
@@ -174,7 +169,7 @@ export default function StoryPage() {
     setProcessing(false);
   };
 
-  const saveBookToFirestore = async (userId, story, imageUrls, bookId) => {
+  const saveBookToFirestore = async (userId, story, imageUrls) => {
     const db = getFirestore();
     const book = {
       userId,
@@ -206,6 +201,13 @@ export default function StoryPage() {
 
   ////
 
+  const fetchBooks = async () => {
+    if (userId) {
+      const fetchedBooks = await getBooksForUser(userId);
+      setBooks(fetchedBooks);
+    }
+  };
+
   const getBooksForUser = async (userId) => {
     setProcessing(true);
     const db = getFirestore();
@@ -228,7 +230,7 @@ export default function StoryPage() {
     // if (userId) {
     //   getBooksForUser(userId)
     // }
-  }, [audio, books]);
+  }, [audio]);
 
 
   const handlePreviewClick = (bookId) => {
@@ -243,7 +245,7 @@ export default function StoryPage() {
   };
   
 
-
+console.log(story)
 
 
   return (
@@ -261,6 +263,7 @@ export default function StoryPage() {
           getBooksForUser={getBooksForUser}
           userId={userId}
           processing={processing}
+          story={story}
         />
 
         {/* Main */}
@@ -287,8 +290,8 @@ export default function StoryPage() {
             </>
           ) : (
             <StoryDisplay
-              // story={story}
-              // images={images}
+              storyUnsaved={story}
+              imagesUnsaved={images}
               story={selectedBook?.story}
               images={selectedBook?.imageUrls}
               page={page}

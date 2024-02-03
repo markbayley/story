@@ -26,6 +26,7 @@ export const StatusBar = ({
   getBooksForUser,
   userId,
   processing,
+  story
 }) => {
   const [user] = useAuthState(auth);
   const router = useRouter();
@@ -72,17 +73,7 @@ export const StatusBar = ({
       </button>
       {/* Reset Button */}
 
-      <button
-        onClick={handleSaveBook}
-        className={
-          processing
-            ? "animate-pulse text-orange-400 px-2 hover:text-orange-400"
-            : "text-white px-2 hover:text-gray-500"
-        }
-      >
-        <ArrowUpTrayIcon className="h-6 w-6 mx-2 " />
-        {processing ? "Saving" : "Save"}
-      </button>
+ 
 
       {/* <button
         onClick={() => getBooksForUser(userId)}
@@ -93,13 +84,28 @@ export const StatusBar = ({
       </button> */}
 
       {open ? (
+        <>
+             <button
+             onClick={handleSaveBook}
+             className={
+               processing
+                 ? "animate-pulse text-orange-400 px-2 hover:text-orange-400"
+                 : story ?
+                 "animate-pulse text-pink-600 px-2 hover:text-gray-500"
+                 :  "text-gray-500 px-2 hover:text-gray-500"
+             }
+           >
+             <ArrowUpTrayIcon className="h-6 w-6 mx-2 " />
+             {processing ? "Saving" : "Save"}
+           </button>
         <button
           onClick={() => setOpen(false)}
-          className="px-2 hover:text-gray-500"
+          className="w-12 hover:text-gray-500 text-center"
         >
-          <XMarkIcon className="h-6 w-6 " />
+          <XMarkIcon className="h-6 w-12 " />
           Close
         </button>
+        </>
       ) : (
         <button
           onClick={() => setOpen(true)}
