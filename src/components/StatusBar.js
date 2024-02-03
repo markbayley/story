@@ -66,11 +66,7 @@ export const StatusBar = ({
         Home
       </button>
 
-      <button className="hover:text-gray-500">
-        {" "}
-        <CurrencyDollarIcon className="h-6 w-6 mx-2 " />
-        Credits
-      </button>
+  
       {/* Reset Button */}
 
  
@@ -107,13 +103,19 @@ export const StatusBar = ({
         </button>
         </>
       ) : (
-        <button
+        <>    <button className="hover:text-gray-500">
+        {" "}
+        <CurrencyDollarIcon className="h-6 w-6 mx-2 " />
+        Credits
+      </button>
+      <button
           onClick={() => setOpen(true)}
           className="px-2 hover:text-gray-500"
         >
           <BookOpenIcon className="h-6 w-6 mx-2" />
           Open
-        </button>
+        </button></>
+    
       )}
 
       {user ? (

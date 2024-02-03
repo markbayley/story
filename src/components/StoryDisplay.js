@@ -1,6 +1,7 @@
 import Image from "next/image";
 import pic7 from "/public/pic7.jpg";
 import { StoryFiller } from "./StoryFiller";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export const StoryDisplay = ({
   story,
@@ -12,6 +13,7 @@ export const StoryDisplay = ({
   loading,
   storyUnsaved,
   imagesUnsaved,
+  setOpen,
 }) => {
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -28,15 +30,16 @@ export const StoryDisplay = ({
         : getDefaultImage(page);
     return (
       <div className="flex justify-center items-center relative">
-    { loading && <div className="spinner w-full h-full absolute"></div> }
-    { imageSrc &&  
-    <Image
-        alt=""
-        style={{ borderRadius: "5px 5px 5px 5px", opacity: "0.85" }}
-        width={650}
-        height={650}
-        src={imageSrc}
-      /> }
+        {loading && <div className="spinner w-full h-full absolute"></div>}
+        {imageSrc && (
+          <Image
+            alt=""
+            style={{ borderRadius: "5px 5px 5px 5px", opacity: "0.85" }}
+            width={650}
+            height={650}
+            src={imageSrc}
+          />
+        )}
       </div>
     );
   };
@@ -46,33 +49,21 @@ export const StoryDisplay = ({
     let min = 0;
     if (direction === "down" && page > min) {
       setPage(page - 1);
-    }
-    else if (direction === "up" && page < max) {
+    } else if (direction === "up" && page < max) {
       setPage(page + 1);
     }
   };
-  
 
   return (
     <div className="fade-in sm:mt-4">
       <div
-        className="lg:mx-[5%] xl:mx-[10%] border-r border-l-1 rounded-xl 
-       bg-orange-200
+        className="lg:mx-[5%] xl:mx-[10%] border-r sm:border-l-1 sm:rounded-xl bg-orange-200
        sm:bg-gradient-to-r from-orange-200 from-20% via-stone-700 via-50% to-orange-200 to-60% ..."
       >
         {/* Image Section */}
-        <div className="border-r-2 border-l-1 rounded-xl border-stone-800 mx-auto sm:flex lg:skew-x-1 border">
-          <div
-            className="w-full h-full sm:w-1/2
-        
-          
-             page wobble
-              pb-4 flex-1 lg:pt-2 lg:ml-2 
-             rounded-xl border-stone-700 border
-             bg-gradient-to-r from-orange-200 from-20% via-orange-200 via-40% to-stone-700 to-90% ...
-              shadow-lg border-b-2"
-          >
-            <div className="m-4  rounded-tl-xl rounded-bl-xl ">
+        <div className="sm:border-r-2 sm:border-l-1 sm:rounded-xl sm:border-stone-800 mx-auto sm:flex lg:skew-x-1 border">
+          <div className="w-full h-full sm:w-1/2 sm:pb-4 flex-1 lg:pt-2 lg:ml-2">
+            <div className="m-4  sm:rounded-tl-xl sm:rounded-bl-xl ">
               <ImageDisplay
                 images={images}
                 page={page}
@@ -83,16 +74,11 @@ export const StoryDisplay = ({
 
           {/* Text Section */}
           <div
-            className="flex flex-col w-full sm:w-1/2 
-                          pl-4 lg:pl-6 pt-6 pr-4
-                          page wobble2
-                         
-                          bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25%  to-orange-200 to-90% ...
-                          rounded lg:rounded-xl border rounded-tr-lg rounded-br-lg border-l-4 border-stone-700 ...
-                           overflow-y-auto
-                           text-stone-900 antiqua"
-          >
-            <div className="  lg:px-4 pb-4 text-stone-900  ">
+            className="flex flex-col w-full sm:w-1/2 pl-4 lg:pl-6 sm:pt-6 pr-4
+                      sm:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25%  to-orange-200 to-90% ...
+                      sm:rounded lg:rounded-xl sm:border sm:rounded-tr-lg sm:rounded-br-lg sm:border-l-4 sm:border-stone-700 ...
+                      overflow-y-auto text-stone-900 antiqua">
+            <div className="flex justify-between  lg:px-4 pb-4 text-stone-900  ">
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold capitalize antiqua">
                 {story
                   ? story?.split("Once")[0]
@@ -100,6 +86,13 @@ export const StoryDisplay = ({
                   ? storyUnsaved?.split("Once")[0]
                   : "Once Upon A Time..."}
               </h1>
+              <button
+          onClick={() => setOpen(false)}
+          className="w-12 hover:text-gray-500 text-center"
+        >
+          <XMarkIcon className="h-6 w-12 " />
+          Close
+        </button>
             </div>
 
             {!story && !storyUnsaved ? (
@@ -155,27 +148,26 @@ export const StoryDisplay = ({
                 </div>
 
                 <div className="w-1/2 text-right">
-  <button
-    onClick={() => handlePage("down")}
-    className="mt-3 px-4 py-1 text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-  >
-    {"<"}
-  </button>
-  <button
-    type="submit"
-    className="px-4 py-1 mx-0 text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-  >
-    {"Page " + page}
-  </button>
-  <button
-    onClick={() => handlePage("up")}
-    type="submit"
-    className="px-4 py-1  text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-  >
-    {">"}
-  </button>
-</div>
-
+                  <button
+                    onClick={() => handlePage("down")}
+                    className="mt-3 px-4 py-1 text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                  >
+                    {"<"}
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-1 mx-0 text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                  >
+                    {"Page " + page}
+                  </button>
+                  <button
+                    onClick={() => handlePage("up")}
+                    type="submit"
+                    className="px-4 py-1  text-stone-950 bg-transparent rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                  >
+                    {">"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

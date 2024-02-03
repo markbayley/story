@@ -1,4 +1,5 @@
 "use client";
+import "./styles.css";
 // Import necessary libraries
 import { useEffect, useRef, useState } from "react";
 import { fetchStory } from "./api/openai/fetchStory";
@@ -7,7 +8,7 @@ import { StatusBar } from "../components/StatusBar";
 import { StoryForm } from "../components/StoryForm";
 import { StoryDisplay } from "../components/StoryDisplay";
 import { BottomNavigation } from "../components/BottomNavigation";
-import "./styles.css";
+
 
 import { myBooks } from "./data.js";
 
@@ -209,7 +210,6 @@ export default function StoryPage() {
   };
 
   const getBooksForUser = async (userId) => {
-    setProcessing(true);
     const db = getFirestore();
     const q = query(collection(db, "books"), where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
@@ -217,9 +217,8 @@ export default function StoryPage() {
     querySnapshot.forEach((doc) => {
       books.push({ id: doc.id, ...doc.data() });
     });
-    console.log("books", books);
-    setBooks(books);
-    setProcessing(false);
+    // console.log("books", books);
+    // setBooks(books);
     return books;
   };
 
@@ -234,8 +233,9 @@ export default function StoryPage() {
 
 
   const handlePreviewClick = (bookId) => {
+    console.log("bookId", bookId)
     const book = books.find((b) => b.id === bookId);
-    console.log("Selected book images:", book?.imageUrls); // Verify that images exist
+ 
     if (book) {
       setSelectedBook(book);
     }
@@ -286,6 +286,8 @@ console.log(story)
                 books={books}
                 extractTitleFromStory={extractTitleFromStory}
                 handlePreviewClick={handlePreviewClick}
+                loading={loading}
+                processing={processing}
               />
             </>
           ) : (
@@ -300,6 +302,7 @@ console.log(story)
               audio={audio}
               audioRef={audioRef}
               loading={loading}
+              setOpen={setOpen}
             />
           )}
         </div>
