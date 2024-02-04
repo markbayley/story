@@ -94,31 +94,34 @@ export const StatusBar = ({
              <ArrowUpTrayIcon className="h-6 w-6 mx-2 " />
              {processing ? "Saving" : "Save"}
            </button>
-        <button
+        {/* <button
           onClick={() => setOpen(false)}
           className="w-12 hover:text-gray-500 text-center"
         >
           <XMarkIcon className="h-6 w-12 " />
           Close
-        </button>
+        </button> */}
         </>
       ) : (
-        <>    <button className="hover:text-gray-500">
-        {" "}
-        <CurrencyDollarIcon className="h-6 w-6 mx-2 " />
-        Credits
-      </button>
-      <button
+        <>   
+      {/* <button
           onClick={() => setOpen(true)}
           className="px-2 hover:text-gray-500"
         >
           <BookOpenIcon className="h-6 w-6 mx-2" />
           Open
-        </button></>
+        </button> */}
+        </>
     
       )}
 
       {user ? (
+        <div>
+         <button className="hover:text-gray-500 mx-6">
+        {" "}
+        <CurrencyDollarIcon className="h-6 w-6 mx-2 " />
+        Credits
+      </button>
         <button className="hover:text-gray-500"
           onClick={() => {
             signOut(auth);
@@ -128,6 +131,7 @@ export const StatusBar = ({
           <UserCircleIcon className="h-6 w-6 mx-2 " />
           Log out
         </button>
+        </div>
       ) : (
         <button onClick={handleUser}>
           <UserCircleIcon className="h-6 w-6 mx-2 " />

@@ -57,7 +57,7 @@ export const StoryDisplay = ({
   return (
     <div className="fade-in sm:mt-4">
       <div
-        className="lg:mx-[5%] xl:mx-[10%] border-r sm:border-l-1 sm:rounded-xl bg-orange-200
+        className="lg:mx-[5%] xl:mx-[10%] border-r sm:border-l-1 sm:rounded-xl bg-orange-200 
        sm:bg-gradient-to-r from-orange-200 from-20% via-stone-700 via-50% to-orange-200 to-60% ..."
       >
         {/* Image Section */}
@@ -75,9 +75,9 @@ export const StoryDisplay = ({
           {/* Text Section */}
           <div
             className="flex flex-col w-full sm:w-1/2 pl-4 lg:pl-6 sm:pt-6 pr-4
-                      sm:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25%  to-orange-200 to-90% ...
+                      sm:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25%  to-orange-200 to-90% ... h-[85vh] 
                       sm:rounded lg:rounded-xl sm:border sm:rounded-tr-lg sm:rounded-br-lg sm:border-l-4 sm:border-stone-700 ...
-                      overflow-y-auto text-stone-900 antiqua">
+                     overflow-y-hidden text-stone-900 antiqua">
             <div className="flex justify-between  lg:px-4 pb-4 text-stone-900  ">
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold capitalize antiqua">
                 {story

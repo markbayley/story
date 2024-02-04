@@ -28,7 +28,7 @@ import { auth } from "@/app/firebase/config";
 // Main Component
 export default function StoryPage() {
   const [userId, setUserId] = useState();
-  console.log(userId);
+
 
   const [prompt, setPrompt] = useState("");
   const [story, setStory] = useState("");
@@ -245,7 +245,7 @@ export default function StoryPage() {
   };
   
 
-console.log(story)
+
 
 
   return (

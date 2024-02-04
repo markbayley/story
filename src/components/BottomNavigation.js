@@ -13,9 +13,9 @@ export const BottomNavigation = ({
     <>
       {books && (
         <div className="lg:fixed bottom-0 left-0 right-0 text-2xl text-orange-300 font-bold antiqua px-4">
-          My Stories
+          { books.length > 0  ? "My Stories" : "No Stories Saved" }
           <div className="flex justify-start  text-orange-300  font-light  ">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-12 gap-2 text-white md:text-xs mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 gap-2 text-white md:text-xs mb-3">
               {books.map((book) => (
                 <button
                   onClick={() => handlePreviewClick(book.id)}
@@ -39,8 +39,9 @@ export const BottomNavigation = ({
                     //book.imageUrls && book.imageUrls.length > 0 ? book.imageUrls[0] :
       src={book.imageUrls && book.imageUrls.length > 0 ? book.imageUrls[0] : pic7}
       alt="preview"
-      layout="fill"
-      objectFit="cover" 
+      fill
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      //objectFit="cover" 
       className={" rounded-r-md"}
     /></div>
                 </button>
