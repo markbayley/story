@@ -1,6 +1,5 @@
 "use client";
 import "./styles.css";
-// Import necessary libraries
 import { useEffect, useRef, useState } from "react";
 import { fetchStory } from "./api/openai/fetchStory";
 import { fetchImages } from "./api/stability/fetchImages";
@@ -8,10 +7,7 @@ import { StatusBar } from "../components/StatusBar";
 import { StoryForm } from "../components/StoryForm";
 import { StoryDisplay } from "../components/StoryDisplay";
 import { BottomNavigation } from "../components/BottomNavigation";
-
-
 import { myBooks } from "./data.js";
-
 import {
   getFirestore,
   collection,
@@ -19,16 +15,15 @@ import {
   where,
   getDocs,
   addDoc,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 
-// Main Component
 export default function StoryPage() {
   const [userId, setUserId] = useState();
-
 
   const [prompt, setPrompt] = useState("");
   const [story, setStory] = useState("");
@@ -45,7 +40,6 @@ export default function StoryPage() {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
 
-
   useEffect(() => {
     fetchBooks();
   }, [userId]); // Fetch books on component mount or when userId changes
@@ -53,28 +47,22 @@ export default function StoryPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    //   const delay = async (ms) => {
-    //     return new Promise((resolve) =>
-    //         setTimeout(resolve, ms));
-    // };
-
     try {
       setMessage("Creating Story...");
-      // await delay(2000);
 
       setLoading(true);
       const storyData = await fetchStory(prompt);
       setMessage("Story Created!");
       setStory(storyData.story);
       console.log("storyData", storyData, "story", story);
-      setOpen(true)
+      setOpen(true);
 
       setMessage("Creating Images...");
       const imageData = await fetchImages(storyData.story);
       setImages(imageData.images);
       console.log("imageData.images", imageData.images);
       setMessage("Images Finished!");
-      // Extract title and save to local storage
+
       const storyTitle = extractTitleFromStory(storyData.story);
       console.log("storyTitle", storyTitle);
 
@@ -96,6 +84,8 @@ export default function StoryPage() {
     setAudio("");
     setPrompt("");
     setMessage("");
+    setOpen(false);
+    setPage(0)
   };
 
   const extractTitleFromStory = (story) => {
@@ -133,20 +123,20 @@ export default function StoryPage() {
     const storage = getStorage();
     const bookId = generateBookId();
     let imageUrls = [];
-  
+
     for (const image of images) {
       const uniqueImageId = `${bookId}_${Date.now()}`; // Ensure unique ID for each image
-      const imageRef = ref(storage, `images/${userId}/${bookId}/${uniqueImageId}`);
+      const imageRef = ref(
+        storage,
+        `images/${userId}/${bookId}/${uniqueImageId}`
+      );
       await uploadBytes(imageRef, image); // Ensure the image is awaited
       const url = await getDownloadURL(imageRef);
       imageUrls.push(url);
     }
-  
+
     return { bookId, imageUrls };
   };
-
-
-  
 
   const handleSaveBook = async () => {
     setProcessing(true);
@@ -157,12 +147,11 @@ export default function StoryPage() {
       );
       console.log("Converted images for upload:", convertedImages);
       const { bookId, imageUrls } = await uploadImages(convertedImages, userId);
-   
 
       // Now use bookId and imageUrls to save the book's data to Firestore
       await saveBookToFirestore(userId, story, imageUrls, bookId);
-         // After saving the book, refetch the books list
-    fetchBooks();
+      // After saving the book, refetch the books list
+      fetchBooks();
     } catch (error) {
       console.error("Error uploading images:", error);
       setProcessing(false);
@@ -188,7 +177,7 @@ export default function StoryPage() {
       console.error(
         "base64ToBlob was called with an undefined or null argument."
       );
-      return null; // Or handle this case as appropriate for your application
+      return null; 
     }
 
     const byteString = atob(base64);
@@ -200,7 +189,7 @@ export default function StoryPage() {
     return new Blob([ab], { type: mimeType });
   };
 
-  ////
+  /////////////////////////////////////////////////////
 
   const fetchBooks = async () => {
     if (userId) {
@@ -217,8 +206,6 @@ export default function StoryPage() {
     querySnapshot.forEach((doc) => {
       books.push({ id: doc.id, ...doc.data() });
     });
-    // console.log("books", books);
-    // setBooks(books);
     return books;
   };
 
@@ -226,27 +213,56 @@ export default function StoryPage() {
     if (audio) {
       audioRef.current.play();
     }
-    // if (userId) {
-    //   getBooksForUser(userId)
-    // }
   }, [audio]);
 
-
   const handlePreviewClick = (bookId) => {
-    console.log("bookId", bookId)
+    console.log("bookId", bookId);
     const book = books.find((b) => b.id === bookId);
- 
     if (book) {
       setSelectedBook(book);
     }
- 
-    setOpen(true)
-    setPage(0)
+    setOpen(true);
+    setPage(0);
+  };
+
+
+  //////
+
+  const handleDeleteBook = async (bookId) => {
+    try {
+      await deleteBookFromFirestore(bookId);
+    
+      // Remove the book from the local state to update the UI
+      const updatedBooks = books.filter(book => book.id !== bookId);
+      setBooks(updatedBooks);
+    } catch (error) {
+      console.error("Failed to delete book:", error);
+      // Optionally handle the error, e.g., show an error message to the user
+    }
   };
   
 
+  const deleteBookFromFirestore = async (bookId) => {
+    const db = getFirestore();
+    
+    // Get a reference to the book document
+    const bookRef = doc(db, "books", bookId);
+    
+    console.log("Deleting book with ID:", bookId);
+    
+    // Delete the document
+    await deleteDoc(bookRef);
+  };
 
 
+  
+
+  console.log("storyUnsaved", story);
+  console.log("imagesUnsaved", images);
+  console.log("processing", processing);
+  console.log("selectedStory", selectedBook?.story);
+  console.log("selectedImages", selectedBook?.imageUrls);
+  console.log("loading", loading);
 
   return (
     <>
@@ -280,7 +296,6 @@ export default function StoryPage() {
                 story={story}
               />
 
-              {/* Bottom Navigation */}
               <BottomNavigation
                 myBooks={myBooks}
                 books={books}
@@ -288,6 +303,7 @@ export default function StoryPage() {
                 handlePreviewClick={handlePreviewClick}
                 loading={loading}
                 processing={processing}
+                handleDeleteBook={handleDeleteBook}
               />
             </>
           ) : (
@@ -303,6 +319,8 @@ export default function StoryPage() {
               audioRef={audioRef}
               loading={loading}
               setOpen={setOpen}
+              handleSaveBook={handleSaveBook}
+              processing={processing}
             />
           )}
         </div>
