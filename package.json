@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "proxy": "http://firebasestorage.googleapis.com",
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "autoprefixer": "10.4.15",

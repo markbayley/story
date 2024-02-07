@@ -32,8 +32,8 @@ export const StatusBar = ({
 
   const currTime = new Date().toLocaleTimeString();
   return (
-    <div className="text-white px-4 py-2 flex justify-between text-xs bg-sky-950">
-      <button onClick={resetStory} className="px-2  hover:text-gray-500">
+    <div className="text-white px-4 py-2 flex justify-between text-xs">
+      <button onClick={resetStory} className="hover:text-gray-500 ml-1">
         <HomeIcon className="h-6 w-6 mx-2 hover:text-gray-500" />
         Home
       </button>
@@ -45,18 +45,18 @@ export const StatusBar = ({
             Credits
           </button>
           <button
-            className="hover:text-gray-500"
+            className="hover:text-gray-500 mr-2"
             onClick={() => {
               signOut(auth);
               sessionStorage.removeItem("user");
             }}
           >
-            <UserCircleIcon className="h-6 w-6 mx-2 " />
-            Log out
+            <UserCircleIcon className="h-6 w-6 mx-2" />
+            Profile
           </button>
         </div>
       ) : (
-        <button onClick={handleUser}>
+        <button onClick={handleUser} className="hover:text-gray-500 mr-2">
           <UserCircleIcon className="h-6 w-6 mx-2 " />
           Login
         </button>

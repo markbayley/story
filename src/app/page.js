@@ -266,7 +266,7 @@ export default function StoryPage() {
 
   return (
     <>
-      <div className="bg-[url('../../public/background3.png')] bg-cover min-h-screen">
+      <div className="bg-[url('../../public/background4.png')] bg-cover min-h-screen">
         {/* Status Bar */}
         <StatusBar
           message={message}
