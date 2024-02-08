@@ -12,14 +12,15 @@ export const StoryForm = ({
   loading,
   setOpen,
   story,
+  handleOpen
 }) => {
   return (
-    <div className="flex justify-end xs:mx-0 sm:mx-32 lg:mr-6">
+    <div className="flex justify-center xl:justify-end xs:mx-0 sm:mx-32 lg:mr-6">
       <form
         onSubmit={handleSubmit}
-        className="p-2 lg:mr-6 rounded-xl xl:w-1/3 "
+        className="p-2 lg:mr-6 rounded-xl lg:w-3/4 xl:w-1/3 "
       >
-        <div className=" text-orange-300 p-4">
+        <div className=" text-orange-300 px-4 pb-4">
           <h1 className="font-bold antiqua text-5xl ">Storyteller AI</h1>
         </div>
         <h3 className=" px-4 text-gray-300 text-md font-light">
@@ -48,7 +49,7 @@ export const StoryForm = ({
             htmlFor="prompt"
             className="block text-sm py-2 font-small text-orange-300"
           >
-            {message ? message : "Create a story about..."}
+            {"Create a story about..."}
           </label>
           <input
             id="prompt"
@@ -56,7 +57,7 @@ export const StoryForm = ({
             placeholder="A magical castle in the sky"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            className="p-2 w-full md:w-2/3 lg:w-full rounded-md border-gray-600 border bg-sky-950 text-white"
+            className="p-2 w-full rounded-md border-gray-600 border bg-sky-950 text-white"
           />
         </div>
         <h4 className="flex justify-between px-4 text-gray-300 text-xs mt-3">
@@ -70,23 +71,23 @@ export const StoryForm = ({
           ) : (
             <button
               type="submit"
-              className="px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400 flex border-b-2 border-stone-700"
+              className={ prompt.length > 10 ? "px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400 flex border-b-2 border-stone-700"
+                         : "px-4 py-2 m-4 text-stone-950 bg-gray-500 rounded-full hover:bg-gray-400 flex border-b-2 border-stone-700" }
             >
               Create
               <PaintBrushIcon className="h-6 w-6 mx-2" />
             </button>
           )}
-          {!story ? (
+     { story &&
             <button
-              onClick={() => setOpen(true)}
+              onClick={handleOpen}
               className="px-4 py-2 m-4 text-stone-950 bg-blue-300 rounded-full hover:bg-blue-400 flex border-b-2 border-stone-700"
             >
               Open
               <BookOpenIcon className="h-6 w-6 mx-2" />
             </button>
-          ) : (
-            ""
-          )}
+}
+     
         </div>
       </form>
     </div>

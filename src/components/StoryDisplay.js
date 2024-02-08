@@ -8,13 +8,11 @@ import {
   ChevronRightIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import HTMLFlipBook from "react-pageflip";
-
 
 
 export const StoryDisplay = ({
-  story,
-  images,
+  storySelected,
+  imagesSelected,
   page,
   setPage,
   audio,
@@ -25,13 +23,12 @@ export const StoryDisplay = ({
   setOpen,
   handleSaveBook,
   processing,
+  message,
+  books,
+  dismiss,
+  setDismiss,
+  story
 }) => {
-
-
-
-  const handlePageChange = (e) => {
-    setCurrentPage(e.data);
-  };
 
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -39,12 +36,12 @@ export const StoryDisplay = ({
     return defaultImages[page] || defaultImages[0];
   };
   // Helper Component for Image Display
-  const ImageDisplay = ({ images, imagesUnsaved, page }) => {
+  const ImageDisplay = ({ imagesSelected, imagesUnsaved, page }) => {
     const imageSrc =
-      page == 5
+      page == 6
         ? getDefaultImage(page)
-        : images || (imagesUnsaved && images?.length > 0)
-        ? images[page]
+        : imagesSelected || (imagesUnsaved && imagesSelected?.length > 0)
+        ? imagesSelected[page]
         : imagesUnsaved?.length > 0
         ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
         : getDefaultImage(page);
@@ -106,73 +103,75 @@ export const StoryDisplay = ({
     }
   };
 
-
-
-  
-
   return (
     <>
-      <div className="fade-in sm:mt-4">
+      <div className="fade-in">
         <div
-          className="lg:mx-[5%] xl:mx-[10%] border-r sm:border-l-1 sm:rounded-xl bg-orange-200 
-              sm:bg-gradient-to-r from-orange-200 from-20% via-stone-700 via-50% to-orange-200 to-60% ..."
+          className="md:mx-[15%] lg:mx-[3%] xl:mx-[10%] border-r sm:border-l-1 sm:rounded-xl bg-orange-200 
+              lg:bg-gradient-to-r from-orange-200 from-20% via-stone-700 via-50% to-orange-200 to-60% ..."
         >
-         
+          {/* Image Section */}
 
-     
-            {/* Image Section */}
-       
-              <div className="sm:border-r-2 sm:border-l-1 sm:rounded-xl sm:border-stone-800 mx-auto sm:flex lg:skew-x-1 border">
-                <div className="w-full h-full sm:w-1/2 sm:pb-4 flex-1 lg:pt-2 lg:ml-2">
-                  <div className="m-4 sm:rounded-tl-xl sm:rounded-bl-xl">
-                    <ImageDisplay
-                      images={images}
-                      page={page}
-                      imagesUnsaved={imagesUnsaved}
-                    />
-                  </div>
-                </div>
-             
-            
-            
+          <div
+            className="sm:border-r-2 sm:border-l-1 sm:rounded-xl sm:border-stone-800 mx-auto
+               lg:flex
+                border xl:h-[87vh]"
+          >
+            <div
+              className="w-full h-full
+                 lg:w-1/2
+                 flex-1 "
+            >
+              <div className="m-4 sm:rounded-tl-xl sm:rounded-bl-xl">
+                <ImageDisplay
+                  imagesSelected={imagesSelected}
+                  page={page}
+                  imagesUnsaved={imagesUnsaved}
+                 
+                />
+              </div>
+            </div>
 
             {/* Text Section */}
 
             <div
-              className="flex flex-col w-full sm:w-1/2 pl-4 lg:pl-6 sm:pt-6 pr-4 pb-6 sm:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25% to-orange-200 to-90% ... 
-                sm:rounded lg:rounded-xl sm:border sm:rounded-tr-lg sm:rounded-br-lg sm:border-l-4 sm:border-stone-700 ... overflow-y-hidden text-stone-900 antiqua"
+              className="flex flex-col w-full
+               lg:w-1/2 
+               p-4 lg:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25% to-orange-200 to-90% ... 
+                sm:rounded lg:rounded-xl lg:border lg:rounded-tr-lg lg:rounded-br-lg lg:border-l-4 lg:border-stone-700 ... overflow-y-hidden text-stone-900 antiqua"
             >
-       
-                <div className="flex justify-between text-stone-900">
-                  <h1 className="text-4xl font-bold capitalize antiqua">
-                    {story
-                      ? story?.split("Once")[0]
-                      : storyUnsaved
-                      ? storyUnsaved?.split("Once")[0]
-                      : "Once Upon A Time..."}
-                  </h1>
-                  <button
-                    onClick={() => setOpen(false)}
-                    className="w-12 hover:text-gray-500 roboto text-center"
-                  >
-                    <XMarkIcon className="h-6 w-12" />
-                    Close
-                  </button>
-                </div>
+              <div className="flex justify-between text-stone-900">
+                <h1 className="text-4xl xl:text-5xl font-bold capitalize antiqua">
+                  {storySelected
+                    ? storySelected?.split("Once")[0]
+                    : storyUnsaved
+                    ? storyUnsaved?.split("Once")[0]
+                    : story
+                    ? story?.split("Once")[0]
+                    : "Once Upon A Time..."}
+                </h1>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="w-12 hover:text-gray-500 roboto text-center"
+                >
+                  <XMarkIcon className="h-6 w-12" />
+                  Close
+                </button>
+              </div>
 
-                <div className="text-stone-900 xs:pr-4 lg:pr-0 text-3xl py-4  w-full h-50">
-                  {!story && !storyUnsaved ? (
-                    <StoryFiller loading={loading} />
-                  ) : (
-                    getStoryText(story || storyUnsaved, page)
-                  )}
-                </div>
+              <div className="text-stone-900 xs:pr-4 lg:pr-0 text-3xl xl:text-[2.15rem] py-4  w-full h-50 no-scrollbar overflow-y-auto">
+                {!storySelected && !storyUnsaved && !story? (
+                  <StoryFiller loading={loading} />
+                ) : (
+                  getStoryText(storySelected || storyUnsaved || story, page)
+                )}
+              </div>
 
-                {/* Controls Section */}
-                <div className="flex-1 flex ">
-                  <div className="w-full flex items-end pr-0 lg:pr-2 ">
-                    <div className="w-1/2  ">
-                      {/* {
+              {/* Controls Section */}
+              <div className="flex-1 flex ">
+                <div className="w-full flex items-end ">
+                  <div className="w-1/2  ">
+                    {
                       <div className="mr-2  shadow-lg rounded-full border-2 border-stone-700 opacity-80">
                         <audio
                           ref={audioRef}
@@ -182,40 +181,38 @@ export const StoryDisplay = ({
                           style={{ height: "43px", border: "2px" }}
                         />
                       </div>
-                    } */}
-                    </div>
+                    }
+                  </div>
 
-                    <div className="w-1/2 text-right flex items-center justify-end">
-                      <button
-                        onClick={() => handlePage("down")}
-                        className=" px-3 py-2 text-stone-950 bg-transparent rounded-tl-full rounded-bl-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-                      >
-                        <ChevronLeftIcon className="h-6 w-6" />
-                      </button>
+                  <div className="w-1/2 text-right flex items-center justify-end">
+                    <button
+                      onClick={() => handlePage("down")}
+                      className=" px-3 py-2 text-stone-950 bg-transparent rounded-tl-full rounded-bl-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                    >
+                      <ChevronLeftIcon className="h-6 w-6" />
+                    </button>
 
-                      <button
-                        type="submit"
-                        className="px-4 py-2 mx-1  text-stone-950 bg-transparent  roboto rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-                      >
-                        {page}
-                      </button>
-                      <button
-                        onClick={() => handlePage("up")}
-                        type="submit"
-                        className="px-3 py-2  text-stone-950 bg-transparent rounded-tr-full rounded-br-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
-                      >
-                        <ChevronRightIcon className="h-6 w-6" />
-                      </button>
-                    </div>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 mx-1  text-stone-950 bg-transparent  roboto rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                    >
+                      {page}
+                    </button>
+                    <button
+                      onClick={() => handlePage("up")}
+                      type="submit"
+                      className="px-3 py-2  text-stone-950 bg-transparent rounded-tr-full rounded-br-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                    >
+                      <ChevronRightIcon className="h-6 w-6" />
+                    </button>
                   </div>
                 </div>
-                {/* Controls Section End*/}
-              
+              </div>
+              {/* Controls Section End*/}
+
               {/* Text Section End*/}
             </div>
-
-            </div>
-
+          </div>
 
           {/* Image Section */}
         </div>
@@ -223,7 +220,7 @@ export const StoryDisplay = ({
       {/* Fade in end */}
 
       {/* Error Start */}
-      {imagesUnsaved.length > 0 && (
+      {imagesUnsaved?.length > 0 && !dismiss && (
         <div
           className={
             processing
@@ -231,16 +228,16 @@ export const StoryDisplay = ({
               : "text-white px-2 hover:text-gray-500 fixed bottom-4 left-4 z-20"
           }
         >
-          <div
-            className="max-w-xs bg-red-500 text-sm text-white rounded-xl shadow-lg relative"
+          <div onClick={handleSaveBook}
+            className="max-w-xs bg-red-500 text-sm text-white rounded-xl shadow-lg relative cursor-pointer"
             role="alert"
           >
             <div className="flex p-4">
-              {processing ? "Saving" : "Save?"}{" "}
+              { processing ? "Saving" : books.length < 12 ? "Save Story" : "Save" }{" "}
               <ArrowUpTrayIcon className="h-6 mx-2" />
               <div className="ms-auto">
                 <button
-                  onClick={handleSaveBook}
+                  onClick={() => setDismiss(!dismiss)}
                   type="button"
                   className="inline-flex flex-shrink-0 justify-center items-center h-5 w-5 rounded-lg text-white hover:text-white opacity-50 hover:opacity-100 focus:outline-none focus:opacity-100"
                 >

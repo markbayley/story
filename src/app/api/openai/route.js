@@ -6,7 +6,7 @@ export async function POST(req) {
   const { prompt } = await req.json();
 
   if (!prompt) return NextResponse.json({ message: "Prompt not found." });
-  console.log(prompt)
+ 
   const response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo-16k",
     messages: [
@@ -14,7 +14,8 @@ export async function POST(req) {
         role: "system",
         // content:  `An imaginative title of the story using words in the ${prompt} `,
         content: `You are a talented writer of fairy tales. Write a very short children's story about: ${prompt}. 
-        Give the story with a three word title using words in the ${prompt}, but don't include the word 'Title'.
+        Give the story a three word title related to the ${prompt}.
+        Do not write the word "Title". For example: "The Enchanted Forest" not "Title: The Enchanted Forest"
         After the title, always begin the story with "Once upon a time ".
         Finish the end of the story with "~The End~"`,
       },

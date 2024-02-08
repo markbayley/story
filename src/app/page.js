@@ -22,6 +22,8 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 
+
+
 export default function StoryPage() {
   const [userId, setUserId] = useState();
 
@@ -36,9 +38,11 @@ export default function StoryPage() {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [dismiss, setDismiss] = useState(false)
 
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [unsavedBook, setUnsavedBook ] = useState([])
 
   useEffect(() => {
     fetchBooks();
@@ -47,34 +51,48 @@ export default function StoryPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!prompt) {
+      setMessage("No Prompt Entered!")
+      return
+    }
+    if ( prompt.length < 10) {
+      setMessage("Prompt Too Short!")
+      return
+    }
+    resetStory();
+    setPrompt(prompt);
     try {
-      setMessage("Creating Story...");
+      setMessage("Writing Story...");
 
       setLoading(true);
       const storyData = await fetchStory(prompt);
       setMessage("Story Created!");
       setStory(storyData.story);
-      console.log("storyData", storyData, "story", story);
+      //console.log("storyData", storyData, "story", story);
+      const storyTitle = extractTitleFromStory(storyData.story);
+      console.log("storyTitle", storyTitle);
       setOpen(true);
 
       setMessage("Creating Images...");
       const imageData = await fetchImages(storyData.story);
       setImages(imageData.images);
-      console.log("imageData.images", imageData.images);
+      //console.log("imageData.images", imageData.images);
       setMessage("Images Finished!");
 
-      const storyTitle = extractTitleFromStory(storyData.story);
-      console.log("storyTitle", storyTitle);
+ 
 
       // Uncomment if you want to fetch audio
       // const audioUrl = await fetchAudio(storyData.story);
       // setAudio(audioUrl);
+      setUnsavedBook([storyData.story, imageData.images]);
+      console.log("UnsavedBook", unsavedBook);
+
     } catch (error) {
       console.error("Error:", error);
       setMessage("No Credits");
       setLoading(false);
     }
-    setMessage("Open Your Story");
+    setMessage("Storybook Created!");
     setLoading(false);
   };
 
@@ -85,7 +103,11 @@ export default function StoryPage() {
     setPrompt("");
     setMessage("");
     setOpen(false);
-    setPage(0)
+    setLoading(false);
+    setProcessing(false);
+    setPage(0);
+    setSelectedBook(null);
+    setDismiss(false)
   };
 
   const extractTitleFromStory = (story) => {
@@ -139,7 +161,13 @@ export default function StoryPage() {
   };
 
   const handleSaveBook = async () => {
+
+    if (books.length >= 12 ) {
+      setMessage("Maximum Books Saved")
+      return
+    }
     setProcessing(true);
+    setMessage("Saving Storybook");
     try {
       const validImages = images.filter((image) => image != null); // Filter out undefined or null images
       const convertedImages = validImages.map((base64Image) =>
@@ -153,10 +181,11 @@ export default function StoryPage() {
       // After saving the book, refetch the books list
       fetchBooks();
     } catch (error) {
-      console.error("Error uploading images:", error);
+      setMessage("Error Saving Book:", error);
       setProcessing(false);
     }
     setProcessing(false);
+    setMessage("Storybook Saved!");
   };
 
   const saveBookToFirestore = async (userId, story, imageUrls) => {
@@ -221,6 +250,7 @@ export default function StoryPage() {
     if (book) {
       setSelectedBook(book);
     }
+    setMessage("");
     setOpen(true);
     setPage(0);
   };
@@ -229,16 +259,19 @@ export default function StoryPage() {
   //////
 
   const handleDeleteBook = async (bookId) => {
+    setMessage("Deleting Book...")
     try {
       await deleteBookFromFirestore(bookId);
     
       // Remove the book from the local state to update the UI
       const updatedBooks = books.filter(book => book.id !== bookId);
       setBooks(updatedBooks);
+   
     } catch (error) {
       console.error("Failed to delete book:", error);
       // Optionally handle the error, e.g., show an error message to the user
     }
+    setMessage("Book Deleted!")
   };
   
 
@@ -255,18 +288,27 @@ export default function StoryPage() {
   };
 
 
+  const handleOpen = () => {
+    setSelectedBook(unsavedBook[0], unsavedBook[1])
+    // setStory(unsavedBook[0])
+    // setImages(unsavedBook[1])
+    setOpen(true)
+    setDismiss(false)
+  }
+
   
 
-  console.log("storyUnsaved", story);
-  console.log("imagesUnsaved", images);
-  console.log("processing", processing);
-  console.log("selectedStory", selectedBook?.story);
-  console.log("selectedImages", selectedBook?.imageUrls);
-  console.log("loading", loading);
+   console.log("storyUnsaved", unsavedBook[0]);
+  console.log("imagesUnsaved", unsavedBook[1]);
+  // console.log("processing", processing);
+ console.log("selectedStory", selectedBook?.story);
+ console.log("selectedImages", selectedBook?.imageUrls);
+  // console.log("loading", loading);
+  //console.log("unsavedBook", unsavedBook[0], unsavedBook[1]);
 
   return (
     <>
-      <div className="bg-[url('../../public/background4.png')] bg-cover min-h-screen">
+      <div className="bg-[url('../../public/background4.png')] bg-cover min-h-screen overflow-hidden">
         {/* Status Bar */}
         <StatusBar
           message={message}
@@ -288,12 +330,15 @@ export default function StoryPage() {
             <>
               <StoryForm
                 setLoading={setLoading}
+                loading={loading}
                 setOpen={setOpen}
                 prompt={prompt}
                 setPrompt={setPrompt}
                 handleSubmit={handleSubmit}
                 message={message}
                 story={story}
+                handleOpen={handleOpen}
+              
               />
 
               <BottomNavigation
@@ -308,10 +353,11 @@ export default function StoryPage() {
             </>
           ) : (
             <StoryDisplay
-              storyUnsaved={story}
-              imagesUnsaved={images}
-              story={selectedBook?.story}
-              images={selectedBook?.imageUrls}
+              story={story}
+              storyUnsaved={unsavedBook[0]}
+              imagesUnsaved={unsavedBook[1]}
+              storySelected={selectedBook?.story}
+              imagesSelected={selectedBook?.imageUrls}
               page={page}
               setPage={setPage}
               resetStory={resetStory}
@@ -321,6 +367,10 @@ export default function StoryPage() {
               setOpen={setOpen}
               handleSaveBook={handleSaveBook}
               processing={processing}
+              message={message}
+              books={books}
+              dismiss={dismiss}
+              setDismiss={setDismiss}
             />
           )}
         </div>

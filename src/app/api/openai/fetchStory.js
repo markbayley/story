@@ -2,6 +2,7 @@
 // Define the fetchStory function
 export const fetchStory = async (prompt) => {
   console.log("prompt-internal", prompt)
+ 
     try {
       // Make a POST request to your API endpoint
       const response = await fetch('/api/openai', {

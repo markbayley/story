@@ -8,12 +8,15 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "proxy": "http://firebasestorage.googleapis.com",
+  "proxy": "https://firebasestorage.googleapis.com/v0/b/story-60f4f.appspot.com",
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "autoprefixer": "10.4.15",
     "axios": "^1.5.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "encoding": "^0.1.13",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "firebase": "^10.7.2",

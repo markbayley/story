@@ -22,25 +22,28 @@ export async function POST(req) {
       }
     );
     const images = await response.json();
-    console.log("routeImages", images)
+
     allImages.push(images.artifacts[0].base64);
-    console.log("allImages", allImages)
+
   }
   return NextResponse.json({ images: allImages });
 }
 
 async function getPrompts(story) {
   const OpenAI = require("openai");
+  const style = "children's story book illustrations"
   const openai = new OpenAI(process.env.OPENAI_API_KEY);
   const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo-16k",
+    model: "gpt-3.5-turbo-0125",
     messages: [
       {
         role: "system",
-        content: `Your job is to generate colorful, simple image prompts for illustrations based on the following kids bedtime story.
-         Each prompt should be a short descriptive sentence.
-          Please list all five prompts, separated by a "|" symbol. For example,
-           "a boy playing on a bright sunny day at the park|a black cat near a dark spooky old house at night|a beautifull woman crossing a bustling city street|a red canoe drifting on a peacefull lake|a boy with a friendly little pet dinosaur".`,
+        content: `Your job is to generate six image prompts for the following story.
+                  Use ${style} for all six prompts.
+                  Each prompt should be a descriptive sentence.
+                  Avoid including words like "mystical", "shimmering", and "glimmering" in prompts.
+                  Please list all six prompts, separated by a "|" symbol.
+                  For example:"a castle high on mountain touching the clouds, ${style}|a boy playing on a bright sunny day at the park, ${style}|a black cat near a dark spooky old house at night, ${style}|a beautifull woman crossing a bustling city street, ${style}|a red canoe drifting on a peacefull lake, ${style}|a boy playing with a cute friendly pet dinosaur, ${style}".`,
       },
       {
         role: "user",
@@ -50,5 +53,6 @@ async function getPrompts(story) {
   });
   const prompts =
     response.choices[0]?.message?.content?.trim().split("|") || "";
+    console.log("story-prompts", prompts);
   return prompts;
 }

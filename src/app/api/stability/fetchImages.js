@@ -11,10 +11,8 @@ export const fetchImages = async (storyText) => {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const imageData = await response.json();
-        console.log("imagedata-Story", imageData)
-
+     
         return imageData;
     } catch (error) {
         console.error('Error fetching images:', error);
