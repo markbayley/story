@@ -9,6 +9,7 @@ export const StoryForm = ({
   setPrompt,
   handleSubmit,
   message,
+  setMessage,
   loading,
   setOpen,
   story,
@@ -41,7 +42,7 @@ export const StoryForm = ({
         </h3>
         <div className="flex items-center pl-4">
           <hr className="h-px my-4 bg-yellow-700 border-0 dark:bg-yellow-600 w-2/5" />{" "}
-          <SparklesIcon className="h-6 w-6 mx-2 text-yellow-700" />{" "}
+          <SparklesIcon className="h-6 w-6 mx-2 text-yellow-700"/>{" "}
           <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-yellow-600 w-2/5" />
         </div>
         <div className="mx-4 rounded-xl">
@@ -56,11 +57,14 @@ export const StoryForm = ({
             type="text"
             placeholder="A magical castle in the sky"
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={(e) => {
+              setPrompt(e.target.value),
+              setMessage("")
+            }}
             className="p-2 w-full rounded-md border-gray-600 border bg-sky-950 text-white"
           />
         </div>
-        <h4 className="flex justify-between px-4 text-gray-300 text-xs mt-3">
+        <h4 className="flex justify-between px-4 text-gray-300 text-xs pt-3">
           Buy credits to generate amazing storybook images!
         </h4>
         <div className="flex">
@@ -72,7 +76,7 @@ export const StoryForm = ({
             <button
               type="submit"
               className={ prompt.length > 10 ? "px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400 flex border-b-2 border-stone-700"
-                         : "px-4 py-2 m-4 text-stone-950 bg-gray-500 rounded-full hover:bg-gray-400 flex border-b-2 border-stone-700" }
+                         : "px-4 py-2 m-4 text-stone-950 bg-blue-300 rounded-full hover:bg-gray-400 flex border-b-2 border-stone-700" }
             >
               Create
               <PaintBrushIcon className="h-6 w-6 mx-2" />

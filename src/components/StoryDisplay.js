@@ -6,9 +6,9 @@ import {
   ArrowUpTrayIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  HandThumbUpIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-
 
 export const StoryDisplay = ({
   storySelected,
@@ -27,9 +27,11 @@ export const StoryDisplay = ({
   books,
   dismiss,
   setDismiss,
-  story
+  story,
+  handleLikeBook,
+  selectedBook,
+  userId
 }) => {
-
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
     const defaultImages = [pic7];
@@ -46,7 +48,7 @@ export const StoryDisplay = ({
         ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
         : getDefaultImage(page);
     return (
-      <div className="flex justify-center items-center relative">
+      <div className="flex justify-center items-center relative fade-in">
         {loading && <div className="spinner w-full h-full absolute"></div>}
         {imageSrc && (
           <Image
@@ -62,7 +64,7 @@ export const StoryDisplay = ({
   };
 
   const handlePage = (direction) => {
-    let max = 5;
+    let max = 6;
     let min = 0;
     if (direction === "down" && page > min) {
       setPage(page - 1);
@@ -103,6 +105,11 @@ export const StoryDisplay = ({
     }
   };
 
+  
+
+  console.log("selectedBook", selectedBook, userId);
+
+
   return (
     <>
       <div className="fade-in">
@@ -127,7 +134,6 @@ export const StoryDisplay = ({
                   imagesSelected={imagesSelected}
                   page={page}
                   imagesUnsaved={imagesUnsaved}
-                 
                 />
               </div>
             </div>
@@ -135,7 +141,7 @@ export const StoryDisplay = ({
             {/* Text Section */}
 
             <div
-              className="flex flex-col w-full
+              className="flex flex-col w-full 
                lg:w-1/2 
                p-4 lg:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25% to-orange-200 to-90% ... 
                 sm:rounded lg:rounded-xl lg:border lg:rounded-tr-lg lg:rounded-br-lg lg:border-l-4 lg:border-stone-700 ... overflow-y-hidden text-stone-900 antiqua"
@@ -152,15 +158,15 @@ export const StoryDisplay = ({
                 </h1>
                 <button
                   onClick={() => setOpen(false)}
-                  className="w-12 hover:text-gray-500 roboto text-center"
+                  className="w-12 hover:text-orange-500 roboto text-center"
                 >
                   <XMarkIcon className="h-6 w-12" />
                   Close
                 </button>
               </div>
 
-              <div className="text-stone-900 xs:pr-4 lg:pr-0 text-3xl xl:text-[2.15rem] py-4  w-full h-50 no-scrollbar overflow-y-auto">
-                {!storySelected && !storyUnsaved && !story? (
+              <div className=" text-stone-900 xs:pr-4 lg:pr-0 text-3xl xl:text-[2.15rem] py-4  w-full h-50 no-scrollbar overflow-y-auto">
+                {!storySelected && !storyUnsaved && !story ? (
                   <StoryFiller loading={loading} />
                 ) : (
                   getStoryText(storySelected || storyUnsaved || story, page)
@@ -170,7 +176,7 @@ export const StoryDisplay = ({
               {/* Controls Section */}
               <div className="flex-1 flex ">
                 <div className="w-full flex items-end ">
-                  <div className="w-1/2  ">
+                  <div className="w-1/3 md:w-1/2  ">
                     {
                       <div className="mr-2  shadow-lg rounded-full border-2 border-stone-700 opacity-80">
                         <audio
@@ -184,7 +190,16 @@ export const StoryDisplay = ({
                     }
                   </div>
 
-                  <div className="w-1/2 text-right flex items-center justify-end">
+                  <div className="w-2/3 md:w-1/2 text-right flex items-center justify-end">
+                    <button
+                      onClick={() => handleLikeBook(selectedBook?.id, userId)}
+                      className="flex relative px-4 py-2 mx-3 text-stone-950 bg-transparent rounded-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                    >
+                      <HandThumbUpIcon className="h-6 w-6" />
+                      <span className="absolute -top-2 -right-2 px-2 bg-orange-400 text-white rounded-full">
+                        {selectedBook?.likes}
+                      </span>
+                    </button>
                     <button
                       onClick={() => handlePage("down")}
                       className=" px-3 py-2 text-stone-950 bg-transparent rounded-tl-full rounded-bl-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
@@ -228,12 +243,18 @@ export const StoryDisplay = ({
               : "text-white px-2 hover:text-gray-500 fixed bottom-4 left-4 z-20"
           }
         >
-          <div onClick={handleSaveBook}
+          <div
+            onClick={handleSaveBook}
             className="max-w-xs bg-red-500 text-sm text-white rounded-xl shadow-lg relative cursor-pointer"
             role="alert"
           >
             <div className="flex p-4">
-              { processing ? "Saving" : books.length < 12 ? "Save Story" : "Save" }{" "}
+              { selectedBook?.id === bookId ? setDismiss(true)
+              : processing
+                ? "Saving"
+                : books.length < 12
+                ? "Save Story"
+                : "Maximum Books Saved"}{" "}
               <ArrowUpTrayIcon className="h-6 mx-2" />
               <div className="ms-auto">
                 <button
