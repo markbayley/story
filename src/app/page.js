@@ -44,12 +44,12 @@ export default function StoryPage() {
   const [processing, setProcessing] = useState(false);
   const [dismiss, setDismiss] = useState(false);
 
-  const [books, setBooks] = useState([]);
+  const [myBooks, setMyBooks] = useState([]);
   const [allBooks, setAllBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [unsavedBook, setUnsavedBook] = useState([]);
 
-  const [myStories, setMyStories] = useState(true);
+  const [myStoriesSelected, setMyStoriesSelected] = useState(false);
 
 
   useEffect(() => {
@@ -161,7 +161,7 @@ export default function StoryPage() {
   };
 
   const handleSaveBook = async () => {
-    if (books.length >= 12) {
+    if (myBooks.length >= 12) {
       setMessage("Maximum Books Saved!");
       return;
     }
@@ -225,7 +225,7 @@ export default function StoryPage() {
   const fetchUserBooks = async () => {
     if (userId) {
       const fetchedBooks = await getBooksForUser(userId);
-      setBooks(fetchedBooks);
+      setMyBooks(fetchedBooks);
     }
   };
 
@@ -233,11 +233,11 @@ export default function StoryPage() {
     const db = getFirestore();
     const q = query(collection(db, "books"), where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
-    let books = [];
+    let myBooks = [];
     querySnapshot.forEach((doc) => {
-      books.push({ id: doc.id, ...doc.data() });
+      myBooks.push({ id: doc.id, ...doc.data() });
     });
-    return books;
+    return myBooks;
   };
 
   const fetchAllBooks = async () => {
@@ -325,8 +325,8 @@ export default function StoryPage() {
       await deleteBookFromFirestore(bookId);
 
       // Remove the book from the local state to update the UI
-      const updatedBooks = books.filter((book) => book.id !== bookId);
-      setBooks(updatedBooks);
+      const updatedBooks = myBooks.filter((book) => book.id !== bookId);
+      setMyBooks(updatedBooks);
     } catch (error) {
       console.error("Failed to delete book:", error);
       // Optionally handle the error, e.g., show an error message to the user
@@ -348,10 +348,10 @@ export default function StoryPage() {
 
   //////////////// VIEWING BOOKS /////////////////
 
-  const handlePreviewClick = (bookId) => {
+  const handlePreviewMine = (bookId) => {
     console.log("bookId", bookId);
 
-    const book = books.find((b) => b.id === bookId);
+    const book = myBooks.find((b) => b.id === bookId);
     if (book) {
       setSelectedBook(book);
     }
@@ -410,6 +410,9 @@ export default function StoryPage() {
           userId={userId}
           processing={processing}
           story={story}
+          setMyBooks={setMyBooks}
+          setUserId={setUserId}
+          setMyStoriesSelected={setMyStoriesSelected}
         
         />
 
@@ -433,16 +436,15 @@ export default function StoryPage() {
 
               <BottomNavigation
                 myBooks={myBooks}
-                books={books}
                 allBooks={allBooks}
                 extractTitleFromStory={extractTitleFromStory}
-                handlePreviewClick={handlePreviewClick}
+                handlePreviewMine={handlePreviewMine}
                 handlePreviewAll={handlePreviewAll}
                 loading={loading}
                 processing={processing}
                 handleDeleteBook={handleDeleteBook}
-                myStories={myStories}
-                setMyStories={setMyStories}
+                myStoriesSelected={myStoriesSelected}
+                setMyStoriesSelected={setMyStoriesSelected}
                 handleLikeBook={handleLikeBook}
                 userId={userId}
               />
@@ -465,7 +467,7 @@ export default function StoryPage() {
               handleSaveBook={handleSaveBook}
               processing={processing}
               message={message}
-              books={books}
+              myBooks={myBooks}
               dismiss={dismiss}
               setDismiss={setDismiss}
               selectedBook={selectedBook}

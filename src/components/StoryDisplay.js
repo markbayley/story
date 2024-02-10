@@ -24,7 +24,7 @@ export const StoryDisplay = ({
   handleSaveBook,
   processing,
   message,
-  books,
+  myBooks,
   dismiss,
   setDismiss,
   story,
@@ -109,7 +109,7 @@ export const StoryDisplay = ({
       return "Once " + textSnippet.split("Once")[1] + "...";
     }
       if (textSnippet === "End~") {
-        return (<div className="h-full flex items-center justify-center text-center mx-6 px-6"><div className="text-3xl italic">This tale was created by {selectedBook?.userId}.<br /> If you enjoyed reading their story please give it a like!</div></div>)
+        return (<div className="h-full flex items-center justify-center text-center mx-6 px-6"><div className="text-3xl italic">This tale was created by {selectedBook?.displayName || selectedBook.userId}.<br /> If you enjoyed reading their story please give it a like!</div></div>)
     } else {
       return textSnippet + (endIndex < storyText.length ? "..." : "");
     }
@@ -117,7 +117,7 @@ export const StoryDisplay = ({
 
   
 
-  console.log("selectedBook", selectedBook, userId, books);
+  console.log("selectedBook", selectedBook, userId, myBooks);
 
 
   return (
@@ -203,11 +203,11 @@ export const StoryDisplay = ({
                   <div className="w-2/3 md:w-1/2 text-right flex items-center justify-end">
                     <button
                       onClick={() => handleLikeBook(selectedBook?.id, userId)}
-                      className={selectedBook?.likedBy.includes(userId) ? "flex relative px-4 py-2 mx-3 text-stone-950 bg-transparent rounded-full hover:bg-orange-400 bg-orange-400 shadow-lg border-2 border-stone-500"
-                      : "flex relative px-4 py-2 mx-3 text-stone-950 rounded-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"}
+                      className={selectedBook?.likedBy.includes(userId) ? "flex relative px-4 py-2 mx-3 text-stone-950  rounded-full hover:bg-orange-400 bg-orange-400 shadow-lg border-2 border-stone-500"
+                      : "flex relative px-4 py-2 mx-3 text-stone-950 rounded-full hover:bg-orange-400 shadow-lg border-2 bg-transparent border-stone-500"}
                     >
                       <HandThumbUpIcon className="h-6 w-6" />
-                      <span className="absolute -top-3 -right-3 px-2 font-sans font-medium bg-slate-700 border-2 border-teal-500 rounded-bl-xl text-teal-500 rounded-full">
+                      <span className="absolute -top-3 -right-3 px-2 font-sans font-medium text-sm bg-slate-700 border-2 border-teal-500 rounded-bl-xl text-teal-500 rounded-full">
                         {selectedBook?.likes}
                       </span>
                     </button>
@@ -220,7 +220,7 @@ export const StoryDisplay = ({
 
                     <button
                       type="submit"
-                      className="px-4 py-2 mx-1  text-stone-950 bg-transparent  roboto rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                      className="px-4 py-2 mx-1  text-stone-950 bg-transparent font-sans font-semibold rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
                     >
                       {page}
                     </button>
@@ -262,7 +262,7 @@ export const StoryDisplay = ({
             <div className="flex p-4">
               {  processing
                 ? "Saving"
-                : books.length < 12
+                : myBooks.length < 12
                 ? "Save Story"
                 : "Maximum Books Saved"}{" "}
               <ArrowUpTrayIcon className="h-6 mx-2" />

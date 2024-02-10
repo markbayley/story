@@ -1,56 +1,73 @@
-'use client'
-import { useState } from 'react';
-import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
-import {auth} from '@/app/firebase/config'
-import Link from 'next/link';
-import { XCircleIcon } from '@heroicons/react/24/outline';
+"use client";
+import { useState } from "react";
+import { useCreateUserWithEmailAndPassword, useUpdateProfile } from "react-firebase-hooks/auth";
+import { auth } from "@/app/firebase/config";
 
-const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+const SignUp = ({ setUserStatus }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const [displayName, setDisplayName] = useState("");
+  // const [photoURL, setPhotoURL] = useState('');
+  // const [updateProfile, updating, error] = useUpdateProfile(auth);
+
+  const [createUserWithEmailAndPassword] =
+    useCreateUserWithEmailAndPassword(auth);
 
   const handleSignUp = async () => {
     try {
-        const res = await createUserWithEmailAndPassword(email, password)
-        console.log({res})
-        sessionStorage.setItem('user', true)
-        setEmail('');
-        setPassword('')
-
-    } catch(e){
-        console.error(e)
+      const res = await createUserWithEmailAndPassword(email, password);
+      console.log({ res });
+      // const update = await useUpdateProfile(displayName);
+      // console.log({ update });
+      sessionStorage.setItem("user", true);
+      setEmail("");
+      setPassword("");
+      setDisplayName("");
+    } catch (e) {
+      console.error(e);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-         
-      <div className="bg-gray-800 p-10 rounded-lg shadow-xl w-96">
-      <div className='text-sm  w-full flex justify-end'><Link href="/"> <XCircleIcon className="h-6 w-6 mx-2 hover:text-gray-500" /></Link></div>
-        <h1 className="text-white text-2xl mb-5">Sign Up</h1>
-        <input 
-          type="email" 
-          placeholder="Email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-          className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
-        />
-        <input 
-          type="password" 
-          placeholder="Password" 
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)} 
-          className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
-        />
-        <button 
-          onClick={handleSignUp}
-          className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500"
+    <div className="bg-sky-950 px-4 md:px-10 pt-6 pb-16 rounded-lg shadow-xl w-80 md:w-96 ">
+      <h1 className="text-white text-2xl mb-5">Sign Up</h1>
+      {/* <input
+        type="text"
+        placeholder="Name"
+        value={displayName}
+        onChange={(e) => setDisplayName(e.target.value)}
+        className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+      /> */}
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+      />
+      <button
+        onClick={handleSignUp}
+        className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500"
+      >
+        Sign Up
+      </button>
+      <p className="text-sm pt-4">
+        Already have an account? Sign in
+        <a
+          onClick={() => setUserStatus(false)}
+          className="text-indigo-500 hover:text-indigo-400 cursor-pointer"
         >
-          Sign Up
-        </button>
-        <p className='text-sm pt-4'>Already have an account? Sign in <Link href="/sign-in" className='text-blue-500'> here</Link></p>
-      </div>
+          {" "}
+          here
+        </a>
+      </p>
     </div>
   );
 };
