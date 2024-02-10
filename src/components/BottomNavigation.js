@@ -23,22 +23,23 @@ export const BottomNavigation = ({
   return (
     <>
       {books && (
-        <div className="xl:fixed bottom-0 left-0 right-0 text-2xl text-orange-300 font-bold antiqua px-5">
+        <div className="xl:fixed bottom-0 left-0 right-0 text-2xl text-orange-300 font-bold font-antiqua px-5">
           <button
-            className={myStories ? "text-orange-300" : "text-gray-500"}
-            onClick={() => setMyStories(true)}
-          >
-            My Stories
-          </button>
-
-          <button
-            className={
-              !myStories ? "text-orange-300 mx-3" : "text-gray-500 mx-3"
-            }
+            className={!myStories ? "text-orange-300" : "text-gray-500"}
             onClick={() => setMyStories(false)}
           >
             Top Stories
           </button>
+          { myStories &&
+          <button
+            className={
+              myStories ? "text-orange-300 mx-3" : "text-gray-500 mx-3"
+            }
+            onClick={() => setMyStories(true)}
+          >
+            My Stories
+          </button>
+}
           <div className="flex justify-start text-orange-300 font-light">
             {myStories ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-2 md:text-xs mb-3">
@@ -53,25 +54,25 @@ export const BottomNavigation = ({
                         event.stopPropagation();
                         handleLikeBook(book.id);
                       }}
-                      className=" z-10 right-1 bottom-1 absolute hover:bg-teal-500 rounded-tl-full rounded-bl-full rounded-tr-full hover:text-white text-teal-500 border-2 border-teal-500 bg-slate-700"
+                      className=" z-10 right-1 top-1 absolute hover:bg-teal-500 rounded-tl-full rounded-bl-full rounded-tr-full hover:text-white text-teal-500 border-2 border-teal-500 bg-slate-700"
                     >
-                      <div className="relative h-10 w-10 lg:h-5 lg:w-5 roboto rounded-full text-md flex justify-center items-center text-center p-3 shadow-xl">
+                      <div className="relative h-10 w-10 lg:h-5 lg:w-5 font-inter font-bold rounded-full text-lg lg:text-sm flex justify-center items-center text-center p-3 shadow-xl">
                         <span className="absolute  left-0 top-0 text-white"></span>
                         {book.likes}
                       </div>
                     </button>
 
-                    <div className="z-10 left-1 bottom-1 absolute hover:bg-teal-500 rounded-bl-lg text-teal-500 border-2 border-teal-500 hover:border-slate-700 rounded-full bg-slate-700 hover:text-slate-700">
+                    <div className="z-10 left-1 top-1 absolute hover:bg-teal-500 rounded-tl-lg text-teal-500 border-2 border-teal-500 hover:border-slate-700 rounded-full bg-slate-700 hover:text-slate-700">
                       {userId == book.userId ? (
                         <TrashIcon className="h-10 w-10 lg:h-6 lg:w-6 p-1" />
                       ) : (
                         ""
                       )}
                     </div>
-                    <div className="bg-cover relative w-[100vw] aspect-square border-4  border-[#15161b] hover:border-4 hover:border-sky-900 rounded-r-xl flex items-start">
-                      <h6 className="p-1 absolute font-medium text-gray-300 tracking-wide  hover:text-gray-300 z-10 bg-gradient-to-r from-sky-950 from-0% to-[#3c3232] to-70% ... rounded-tr-full rounded-br-full w-5/6 border-b-2 border-gray-900 opacity-90 drop-shadow-2xl">
-                        {extractTitleFromStory(book.story) || "Untitled"}
-                      </h6>
+                    <div className="bg-cover relative w-[100vw] aspect-square border-4  border-[#15161b] hover:border-4 hover:border-sky-900 rounded-r-xl flex items-end">
+                    <h5 className="pr-3 pl-1 xl:py-1 absolute font-medium text-gray-300  tracking-wide  hover:text-gray-300 z-10 bg-gradient-to-r from-sky-950 from-0% to-[#3c3232] to-70% ... rounded-tr-full rounded-br-full border-b-2 border-gray-900 opacity-90 drop-shadow-2xl">
+                          {extractTitleFromStory(book.story) || "Untitled"}
+                        </h5>
 
                       <Image
                         src={pic7}
@@ -107,13 +108,13 @@ export const BottomNavigation = ({
                         }}
                         className=" z-10 right-1 top-1 absolute hover:bg-teal-500 rounded-tl-full rounded-bl-full rounded-tr-full hover:text-white text-teal-500 border-2 border-teal-500 bg-slate-700"
                       >
-                        <div className="relative h-10 w-10 lg:h-5 lg:w-5 roboto rounded-full text-md flex justify-center items-center text-center p-3 shadow-xl">
+                        <div className="relative h-10 w-10 lg:h-5 lg:w-5 font-inter font-bold rounded-full text-md flex justify-center items-center text-center p-3 shadow-xl">
                           <span className="absolute  left-0 top-0 text-white"></span>
                           {book.likes}
                         </div>
                       </button>
 
-                      <div className="z-10 left-1 top-1 absolute hover:bg-teal-500 rounded-tl-lg text-teal-500 border-2 border-teal-500 hover:border-slate-700 rounded-full bg-slate-700 hover:text-slate-700">
+                      <div className="z-10 left-1 top-1 absolute hover:bg-teal-500 rounded-tl-lg text-indigo-200 border-2 border-indigo-600 hover:border-slate-700 rounded-full bg-slate-700 hover:text-slate-700">
                         {userId == book.userId ? (
                           <UserCircleIcon className="h-10 w-10 lg:h-6 lg:w-6" />
                         ) : (

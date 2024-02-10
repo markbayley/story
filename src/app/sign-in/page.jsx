@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 
-const SignIn = () => {
+const SignIn = ({}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
@@ -26,9 +26,9 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-gray-800 p-10 rounded-lg shadow-xl w-96">
-      <div className='text-sm  w-full flex justify-end'><Link href="/"> <XCircleIcon className="h-6 w-6 mx-2 hover:text-gray-500" /></Link></div>
+    // <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="bg-sky-950 px-4 md:px-10 pt-3 pb-16 rounded-lg shadow-xl w-80 md:w-96">
+      <div className='text-sm text-white w-full flex justify-end'><Link href="/"> <XCircleIcon className="h-6 w-6 mx-2 hover:text-gray-500" /></Link></div>
         <h1 className="text-white text-2xl mb-5">Sign In</h1>
         <input 
           type="email" 
@@ -52,7 +52,7 @@ const SignIn = () => {
         </button>
         <p className='text-sm pt-4'>Don't have an account? Create account <Link href="/sign-up" className='text-blue-500'> here</Link></p>
       </div>
-    </div>
+    // </div>
   );
 };
 

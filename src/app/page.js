@@ -1,5 +1,4 @@
 "use client";
-import "./styles.css";
 import { useEffect, useRef, useState } from "react";
 import { fetchStory } from "./api/openai/fetchStory";
 import { fetchImages } from "./api/stability/fetchImages";
@@ -26,9 +25,11 @@ import {
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
+import SignIn from "./sign-in/page";
 
 export default function StoryPage() {
   const [userId, setUserId] = useState();
+  const [bookId, setBookId] = useState();
 
   const [prompt, setPrompt] = useState("");
   const [story, setStory] = useState("");
@@ -127,6 +128,7 @@ export default function StoryPage() {
   ///////////////// SAVE BOOK //////////////////
 
   const [user] = useAuthState(auth);
+  console.log("user", user)
   useEffect(() => {
     if (user) {
       setUserId(user.uid);
@@ -395,7 +397,7 @@ export default function StoryPage() {
 
   return (
     <>
-      <div className="bg-[url('../../public/background4.png')] bg-cover min-h-screen overflow-hidden">
+      <div className="bg-[url('../../public/background5.png')] bg-cover min-h-screen overflow-hidden">
         <StatusBar
           message={message}
           resetStory={resetStory}
@@ -408,7 +410,10 @@ export default function StoryPage() {
           userId={userId}
           processing={processing}
           story={story}
+        
         />
+
+      
 
         <div>
           {!open ? (
@@ -465,6 +470,7 @@ export default function StoryPage() {
               setDismiss={setDismiss}
               selectedBook={selectedBook}
               userId={userId}
+              bookId={bookId}
             
             />
           )}

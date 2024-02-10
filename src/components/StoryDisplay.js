@@ -30,7 +30,8 @@ export const StoryDisplay = ({
   story,
   handleLikeBook,
   selectedBook,
-  userId
+  userId, 
+  bookId
 }) => {
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -41,16 +42,22 @@ export const StoryDisplay = ({
   const ImageDisplay = ({ imagesSelected, imagesUnsaved, page }) => {
     const imageSrc =
       page == 6
-        ? getDefaultImage(page)
-        : imagesSelected || (imagesUnsaved && imagesSelected?.length > 0)
-        ? imagesSelected[page]
-        : imagesUnsaved?.length > 0
-        ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
-        : getDefaultImage(page);
+      ? getDefaultImage(page)
+      : imagesSelected || (imagesUnsaved && imagesSelected?.length > 0)
+      ? imagesSelected[page]
+      : imagesUnsaved?.length > 0
+      ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
+      : getDefaultImage(page);
+        // ? getDefaultImage(page)
+        // : imagesSelected?.length > 0
+        // ? imagesSelected[page]
+        // : imagesUnsaved?.length > 0
+        // ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
+        // : <div className="spinner w-full h-full absolute"></div>;
     return (
       <div className="flex justify-center items-center relative fade-in">
-        {loading && <div className="spinner w-full h-full absolute"></div>}
-        {imageSrc && (
+        {<div className="spinner w-full h-full absolute"></div>}
+        {imageSrc && 
           <Image
             alt=""
             style={{ borderRadius: "5px 5px 5px 5px", opacity: "0.85" }}
@@ -58,7 +65,7 @@ export const StoryDisplay = ({
             height={650}
             src={imageSrc}
           />
-        )}
+      }
       </div>
     );
   };
@@ -100,6 +107,9 @@ export const StoryDisplay = ({
     // Special handling for the first page to ensure "Once" is included
     if (currentPage === 0) {
       return "Once " + textSnippet.split("Once")[1] + "...";
+    }
+      if (textSnippet === "End~") {
+        return (<div className="h-full flex items-center justify-center text-center mx-6 px-6"><div className="text-3xl italic">This tale was created by {selectedBook?.userId}.<br /> If you enjoyed reading their story please give it a like!</div></div>)
     } else {
       return textSnippet + (endIndex < storyText.length ? "..." : "");
     }
@@ -107,7 +117,7 @@ export const StoryDisplay = ({
 
   
 
-  console.log("selectedBook", selectedBook, userId);
+  console.log("selectedBook", selectedBook, userId, books);
 
 
   return (
@@ -144,10 +154,10 @@ export const StoryDisplay = ({
               className="flex flex-col w-full 
                lg:w-1/2 
                p-4 lg:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25% to-orange-200 to-90% ... 
-                sm:rounded lg:rounded-xl lg:border lg:rounded-tr-lg lg:rounded-br-lg lg:border-l-4 lg:border-stone-700 ... overflow-y-hidden text-stone-900 antiqua"
+                sm:rounded lg:rounded-xl lg:border lg:rounded-tr-lg lg:rounded-br-lg lg:border-l-4 lg:border-stone-700 ... overflow-y-hidden text-stone-900 font-antiqua"
             >
               <div className="flex justify-between text-stone-900">
-                <h1 className="text-4xl xl:text-5xl font-bold capitalize antiqua">
+                <h1 className="text-4xl xl:text-5xl font-bold capitalize font-antiqua">
                   {storySelected
                     ? storySelected?.split("Once")[0]
                     : storyUnsaved
@@ -165,11 +175,11 @@ export const StoryDisplay = ({
                 </button>
               </div>
 
-              <div className=" text-stone-900 xs:pr-4 lg:pr-0 text-3xl xl:text-[2.15rem] py-4  w-full h-50 no-scrollbar overflow-y-auto">
+              <div className="h-full text-stone-900 xs:pr-4 lg:pr-0 text-3xl xl:text-[2.15rem] py-4  w-full  no-scrollbar overflow-y-auto">
                 {!storySelected && !storyUnsaved && !story ? (
                   <StoryFiller loading={loading} />
                 ) : (
-                  getStoryText(storySelected || storyUnsaved || story, page)
+                 getStoryText(storySelected || storyUnsaved || story, page)
                 )}
               </div>
 
@@ -193,10 +203,11 @@ export const StoryDisplay = ({
                   <div className="w-2/3 md:w-1/2 text-right flex items-center justify-end">
                     <button
                       onClick={() => handleLikeBook(selectedBook?.id, userId)}
-                      className="flex relative px-4 py-2 mx-3 text-stone-950 bg-transparent rounded-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                      className={selectedBook?.likedBy.includes(userId) ? "flex relative px-4 py-2 mx-3 text-stone-950 bg-transparent rounded-full hover:bg-orange-400 bg-orange-400 shadow-lg border-2 border-stone-500"
+                      : "flex relative px-4 py-2 mx-3 text-stone-950 rounded-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"}
                     >
                       <HandThumbUpIcon className="h-6 w-6" />
-                      <span className="absolute -top-2 -right-2 px-2 bg-orange-400 text-white rounded-full">
+                      <span className="absolute -top-3 -right-3 px-2 font-sans font-medium bg-slate-700 border-2 border-teal-500 rounded-bl-xl text-teal-500 rounded-full">
                         {selectedBook?.likes}
                       </span>
                     </button>
@@ -249,8 +260,7 @@ export const StoryDisplay = ({
             role="alert"
           >
             <div className="flex p-4">
-              { selectedBook?.id === bookId ? setDismiss(true)
-              : processing
+              {  processing
                 ? "Saving"
                 : books.length < 12
                 ? "Save Story"

@@ -1,7 +1,13 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Inter, Glass_Antiqua, Roboto_Slab, Open_Sans } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'],  display: 'swap', variable: '--font-inter', })
+const antiqua = Glass_Antiqua({ subsets: ['latin'], display: 'swap', weight: '400', variable: '--font-antiqua', })
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-opensans',
+})
 
 export const metadata = {
   title: 'Create Next App',
@@ -11,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body  className={`${openSans.variable} ${inter.variable} ${antiqua.variable} font-sans`} >{children}</body>
     </html>
   )
 }

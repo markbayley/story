@@ -1,3 +1,4 @@
+import SignIn from "@/app/sign-in/page";
 import {
   BookOpenIcon,
   PaintBrushIcon,
@@ -16,13 +17,13 @@ export const StoryForm = ({
   handleOpen
 }) => {
   return (
-    <div className="flex justify-center xl:justify-end xs:mx-0 sm:mx-32 lg:mr-6">
+    <div className="flex justify-center xl:justify-between xs:mx-0 sm:mx-32 lg:mr-6 font-inter">
       <form
         onSubmit={handleSubmit}
-        className="p-2 lg:mr-6 rounded-xl lg:w-3/4 xl:w-1/3 "
+        className="mt-2 lg:mr-6 rounded-xl lg:w-3/4 xl:w-1/3  "
       >
         <div className=" text-orange-300 px-4 pb-4">
-          <h1 className="font-bold antiqua text-5xl ">Storyteller AI</h1>
+          <h1 className="font-bold font-antiqua text-5xl ">Storyteller AI</h1>
         </div>
         <h3 className=" px-4 text-gray-300 text-md font-light">
           What do you want to read about?
@@ -76,7 +77,7 @@ export const StoryForm = ({
             <button
               type="submit"
               className={ prompt.length > 10 ? "px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400 flex border-b-2 border-stone-700"
-                         : "px-4 py-2 m-4 text-stone-950 bg-blue-300 rounded-full hover:bg-gray-400 flex border-b-2 border-stone-700" }
+                         : "px-4 py-2 m-4 text-white bg-indigo-600 rounded-full hover:bg-indigo-500 flex border-b-2 border-stone-700" }
             >
               Create
               <PaintBrushIcon className="h-6 w-6 mx-2" />
@@ -93,7 +94,10 @@ export const StoryForm = ({
 }
      
         </div>
+       
       </form>
+      {/* <SignIn /> */}
+    
     </div>
   );
 };
