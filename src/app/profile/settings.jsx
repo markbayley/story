@@ -2,20 +2,16 @@ import { useUpdateProfile } from 'react-firebase-hooks/auth';
 import { auth } from "@/app/firebase/config";
 import { useState } from 'react';
 
-const Settings = () => {
+const Settings = ({setMessage}) => {
   const [displayName, setDisplayName] = useState('');
   const [photoURL, setPhotoURL] = useState('');
   const [updateProfile, updating, error] = useUpdateProfile(auth);
 
   if (error) {
-    return (
-      <div>
-        <p>Error: {error.message}</p>
-      </div>
-    );
+    setMessage("Error Updating Profile");
   }
   if (updating) {
-    return <p>Updating...</p>;
+    setMessage("Updating Profile");
   }
   return (
     <div className="bg-sky-950 px-4 md:px-10 pt-2 pb-6 rounded-lg shadow-xl w-80 md:w-96 ">
@@ -25,17 +21,17 @@ const Settings = () => {
         placeholder="Display Name"
         value={displayName}
         onChange={(e) => setDisplayName(e.target.value)}
-        className="w-full p-3 mb-4  rounded outline-none text-black placeholder-gray-500 bg-white text-[13px]"
+        className="w-full p-3 mb-4  rounded outline-none text-black placeholder-gray-500 bg-white text-[15px]"
       />
       <input
         type="photoURL"
         placeholder="Profile Photo"
         value={photoURL}
         onChange={(e) => setPhotoURL(e.target.value)}
-        className="w-full p-3 mb-4  rounded outline-none text-black placeholder-gray-500 bg-white text-[13px]"
+        className="w-full p-3 mb-4  rounded outline-none text-black placeholder-gray-500 bg-white text-[15px]"
       />
       <button
-       className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500 text-[14px]"
+       className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500 text-[15px]"
         onClick={async () => {
           const success = await updateProfile({ displayName, photoURL });
           if (success) {

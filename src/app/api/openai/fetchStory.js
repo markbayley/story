@@ -10,7 +10,7 @@ export const fetchStory = async (prompt) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }), // Send the prompt as JSON
       });
-  
+      console.log("response", response)
       // Check if the request was successful
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

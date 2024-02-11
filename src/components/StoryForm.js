@@ -49,7 +49,7 @@ export const StoryForm = ({
         <div className="mx-4 rounded-xl">
           <label
             htmlFor="prompt"
-            className="block text-sm py-2 font-small text-orange-300"
+            className="block text-md py-2  text-orange-300"
           >
             {"Create a story about..."}
           </label>
@@ -62,22 +62,22 @@ export const StoryForm = ({
               setPrompt(e.target.value),
               setMessage("")
             }}
-            className="p-2 w-full rounded-md border-gray-600 border bg-sky-950 text-white"
+            className="p-2 w-full rounded-md border-gray-600 border text-[15px]"
           />
         </div>
         <h4 className="flex justify-between px-4 text-gray-300 text-xs pt-3">
           Buy credits to generate amazing storybook images!
         </h4>
-        <div className="flex">
+        <div className="flex text-[15px]">
           {loading ? (
-            <button className="px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400">
+            <button className="px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400 ">
               Creating Story...
             </button>
           ) : (
             <button
               type="submit"
-              className={ prompt.length > 10 ? "px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400 flex border-b-2 border-stone-700"
-                         : "px-4 py-2 m-4 text-white bg-indigo-600 rounded-full hover:bg-indigo-500 flex border-b-2 border-stone-700" }
+              className={"w-full text-white px-4 py-2 m-4  rounded bg-indigo-600 hover:bg-indigo-500 flex justify-center border-b-2 border-stone-700"}
+                        
             >
               Create
               <PaintBrushIcon className="h-6 w-6 mx-2" />

@@ -3,7 +3,7 @@ import pic7 from "/public/pic7.jpg";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
-export const BottomNavigation = ({
+export const StorySelector = ({
   myBooks,
   allBooks,
   extractTitleFromStory,

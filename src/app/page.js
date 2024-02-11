@@ -5,8 +5,7 @@ import { fetchImages } from "./api/stability/fetchImages";
 import { StatusBar } from "../components/StatusBar";
 import { StoryForm } from "../components/StoryForm";
 import { StoryDisplay } from "../components/StoryDisplay";
-import { BottomNavigation } from "../components/BottomNavigation";
-import { myBooks } from "./firebase/data.js";
+import { StorySelector } from "../components/StorySelector";
 import {
   getFirestore,
   collection,
@@ -20,12 +19,11 @@ import {
   doc,
   onSnapshot,
   arrayUnion,
-  getDoc
+  getDoc,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
-import SignIn from "./sign-in/page";
 
 export default function StoryPage() {
   const [userId, setUserId] = useState();
@@ -50,7 +48,6 @@ export default function StoryPage() {
   const [unsavedBook, setUnsavedBook] = useState([]);
 
   const [myStoriesSelected, setMyStoriesSelected] = useState(false);
-
 
   useEffect(() => {
     fetchUserBooks();
@@ -128,7 +125,7 @@ export default function StoryPage() {
   ///////////////// SAVE BOOK //////////////////
 
   const [user] = useAuthState(auth);
-  console.log("user", user)
+  console.log("user", user);
   useEffect(() => {
     if (user) {
       setUserId(user.uid);
@@ -189,8 +186,8 @@ export default function StoryPage() {
 
   const saveBookToFirestore = async (userId, story, imageUrls) => {
     const db = getFirestore();
-    const likedBy = []
-    const likes = 0
+    const likedBy = [];
+    const likes = 0;
     const book = {
       userId,
       likes,
@@ -256,34 +253,29 @@ export default function StoryPage() {
     return allBooks;
   };
 
-
   /////////////// LIKE UPDATE BOOK
 
-
   const handleLikeBook = async (bookId, userId) => {
-    if (userId === selectedBook.userId) {
+    if (userId === selectedBook?.userId || myBooks[0]?.userId) {
       setMessage("Can't Like Own Book!");
       return;
     }
-  
+
     try {
       await fetchBookById(bookId, userId); // Now passing userId
-        // Assuming likes are directly updated in the UI without refetching from Firestore
-      
+      // Assuming likes are directly updated in the UI without refetching from Firestore
+
       // UI logic as previously described
     } catch (error) {
-      setMessage("Can't Like Book Twice!")
+      setMessage("Can't Like Book Twice!");
       console.error("Error liking book: ", error);
     }
-   
   };
-  
-
 
   const fetchBookById = async (bookId, userId) => {
     const db = getFirestore();
     const bookRef = doc(db, "books", bookId);
-  
+
     const docSnap = await getDoc(bookRef);
     if (docSnap.exists()) {
       const bookData = docSnap.data();
@@ -294,7 +286,10 @@ export default function StoryPage() {
       // Check if the user has already liked the book
       if (bookData.likedBy && !bookData.likedBy.includes(userId)) {
         // Update the document to add the user to the likedBy array and increment likes
-        setSelectedBook({...selectedBook, likes: (selectedBook.likes || 0) + 1});
+        setSelectedBook({
+          ...selectedBook,
+          likes: (selectedBook.likes || 0) + 1,
+        });
         await updateDoc(bookRef, {
           likedBy: arrayUnion(userId),
           likes: increment(1),
@@ -309,13 +304,6 @@ export default function StoryPage() {
       console.log("No such document!");
     }
   };
-
-
-
-
-
-  
-  
 
   //////////////// REMOVE BOOK ///////////////
 
@@ -393,7 +381,7 @@ export default function StoryPage() {
     setDismiss(false);
   };
 
-  console.log("userId", userId)
+  console.log("userId", userId);
 
   return (
     <>
@@ -401,22 +389,11 @@ export default function StoryPage() {
         <StatusBar
           message={message}
           resetStory={resetStory}
-          loading={loading}
-          setLoading={setLoading}
-          open={open}
-          setOpen={setOpen}
-          handleSaveBook={handleSaveBook}
-          getBooksForUser={getBooksForUser}
-          userId={userId}
-          processing={processing}
-          story={story}
           setMyBooks={setMyBooks}
           setUserId={setUserId}
           setMyStoriesSelected={setMyStoriesSelected}
-        
+          setMessage={setMessage}
         />
-
-      
 
         <div>
           {!open ? (
@@ -434,7 +411,7 @@ export default function StoryPage() {
                 setMessage={setMessage}
               />
 
-              <BottomNavigation
+              <StorySelector
                 myBooks={myBooks}
                 allBooks={allBooks}
                 extractTitleFromStory={extractTitleFromStory}
@@ -473,7 +450,7 @@ export default function StoryPage() {
               selectedBook={selectedBook}
               userId={userId}
               bookId={bookId}
-            
+              setMessage={setMessage}
             />
           )}
         </div>

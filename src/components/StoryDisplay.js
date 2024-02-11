@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+"use client";
 import Image from "next/image";
 import pic7 from "/public/pic7.jpg";
-import { StoryFiller } from "./StoryFiller";
 import {
   ArrowUpTrayIcon,
   ChevronLeftIcon,
@@ -23,15 +22,14 @@ export const StoryDisplay = ({
   setOpen,
   handleSaveBook,
   processing,
-  message,
   myBooks,
   dismiss,
   setDismiss,
   story,
   handleLikeBook,
   selectedBook,
-  userId, 
-  bookId
+  userId,
+  setMessage,
 }) => {
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -41,23 +39,18 @@ export const StoryDisplay = ({
   // Helper Component for Image Display
   const ImageDisplay = ({ imagesSelected, imagesUnsaved, page }) => {
     const imageSrc =
-      page == 6
-      ? getDefaultImage(page)
-      : imagesSelected || (imagesUnsaved && imagesSelected?.length > 0)
-      ? imagesSelected[page]
-      : imagesUnsaved?.length > 0
-      ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
-      : getDefaultImage(page);
-        // ? getDefaultImage(page)
-        // : imagesSelected?.length > 0
-        // ? imagesSelected[page]
-        // : imagesUnsaved?.length > 0
-        // ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
-        // : <div className="spinner w-full h-full absolute"></div>;
+      page == 5
+        ? getDefaultImage(page) // Default image at end of book
+        : imagesSelected || (imagesUnsaved && imagesSelected?.length > 0)
+        ? imagesSelected[page]
+        : imagesUnsaved?.length > 0
+        ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
+        : getDefaultImage(page); // Default image when loading or no images
+
     return (
       <div className="flex justify-center items-center relative fade-in">
         {<div className="spinner w-full h-full absolute"></div>}
-        {imageSrc && 
+        {imageSrc && (
           <Image
             alt=""
             style={{ borderRadius: "5px 5px 5px 5px", opacity: "0.85" }}
@@ -65,13 +58,13 @@ export const StoryDisplay = ({
             height={650}
             src={imageSrc}
           />
-      }
+        )}
       </div>
     );
   };
 
   const handlePage = (direction) => {
-    let max = 6;
+    let max = 5;
     let min = 0;
     if (direction === "down" && page > min) {
       setPage(page - 1);
@@ -80,45 +73,54 @@ export const StoryDisplay = ({
     }
   };
 
-  const getStoryText = (storyText, currentPage) => {
-    if (!storyText) return "";
+  const prepareText = (storyText) => {
+    // Remove the title (assuming it's the first three words followed by two newlines)
+    const titleEndIndex = storyText.indexOf("Once upon a time");
+    const withoutTitle = storyText.substring(titleEndIndex);
 
-    const pageTextLength = 450; // Defines the length of text per page
-    let startIndex = currentPage * pageTextLength;
-    let endIndex = startIndex + pageTextLength;
-
-    // Adjust startIndex for pages after the first one
-    if (currentPage > 0) {
-      while (startIndex > 0 && storyText[startIndex - 1] !== " ") {
-        startIndex--;
-      }
-    }
-
-    // Adjust endIndex to not cut off in the middle of a word
-    if (endIndex < storyText.length) {
-      while (endIndex < storyText.length && storyText[endIndex] !== " ") {
-        endIndex--;
-      }
-    }
-
-    // Extract the text snippet for the current page
-    const textSnippet = storyText.substring(startIndex, endIndex).trim();
-
-    // Special handling for the first page to ensure "Once" is included
-    if (currentPage === 0) {
-      return "Once " + textSnippet.split("Once")[1] + "...";
-    }
-      if (textSnippet === "End~") {
-        return (<div className="h-full flex items-center justify-center text-center mx-6 px-6"><div className="text-3xl italic">This tale was created by {selectedBook?.displayName || selectedBook.userId}.<br /> If you enjoyed reading their story please give it a like!</div></div>)
-    } else {
-      return textSnippet + (endIndex < storyText.length ? "..." : "");
-    }
+    // Split into paragraphs
+    return withoutTitle.split("\n\n");
   };
 
-  
+  const getStoryText = (storyText, currentPage) => {
+    if (!storyText) return null;
 
-  console.log("selectedBook", selectedBook, userId, myBooks);
+    // Split the story into paragraphs
+    const paragraphs = prepareText(storyText);
 
+    // Calculate the number of paragraphs per page (adjust as needed)
+    const paragraphsPerPage = 2; // Example: 2 paragraphs per page
+    const startIndex = currentPage * paragraphsPerPage;
+    const endIndex = startIndex + paragraphsPerPage;
+
+    // Slice the paragraphs for the current page
+    const currentPageParagraphs = paragraphs.slice(startIndex, endIndex);
+
+    const pages = paragraphs.length / 2;
+
+    if (currentPage == pages) {
+      return (
+        <div className="h-full flex items-center justify-center text-center mx-6 px-6">
+          <div className="text-3xl italic">
+            This tale was created by{" "}
+            {selectedBook?.displayName || selectedBook.userId}.<br /> If you
+            enjoyed reading their story please give it a like!
+          </div>
+        </div>
+      );
+    }
+
+    // Render each paragraph separately
+    return (
+      <div>
+        {currentPageParagraphs.map((paragraph, index) => (
+          <p key={index} style={{ textAlign: "justify", marginBottom: "1em" }}>
+            {paragraph}
+          </p>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -153,7 +155,7 @@ export const StoryDisplay = ({
             <div
               className="flex flex-col w-full 
                lg:w-1/2 
-               p-4 lg:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25% to-orange-200 to-90% ... 
+               p-4 xl:pr-6 lg:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25% to-orange-200 to-90% ... 
                 sm:rounded lg:rounded-xl lg:border lg:rounded-tr-lg lg:rounded-br-lg lg:border-l-4 lg:border-stone-700 ... overflow-y-hidden text-stone-900 font-antiqua"
             >
               <div className="flex justify-between text-stone-900">
@@ -167,7 +169,10 @@ export const StoryDisplay = ({
                     : "Once Upon A Time..."}
                 </h1>
                 <button
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false);
+                    setMessage("");
+                  }}
                   className="w-12 hover:text-orange-500 roboto text-center"
                 >
                   <XMarkIcon className="h-6 w-12" />
@@ -175,16 +180,14 @@ export const StoryDisplay = ({
                 </button>
               </div>
 
-              <div className="h-full text-stone-900 xs:pr-4 lg:pr-0 text-3xl xl:text-[2.15rem] py-4  w-full  no-scrollbar overflow-y-auto">
-                {!storySelected && !storyUnsaved && !story ? (
-                  <StoryFiller loading={loading} />
-                ) : (
-                 getStoryText(storySelected || storyUnsaved || story, page)
-                )}
+              <div className="h-full text-stone-900 xs:pr-4 lg:pr-0 text-3xl  py-4  w-full  no-scrollbar overflow-y-auto">
+                {!storySelected && !storyUnsaved && !story
+                  ? ""
+                  : getStoryText(storySelected || storyUnsaved || story, page)}
               </div>
 
               {/* Controls Section */}
-              <div className="flex-1 flex ">
+              <div className="flex-1 flex pt-3 ">
                 <div className="w-full flex items-end ">
                   <div className="w-1/3 md:w-1/2  ">
                     {
@@ -203,31 +206,34 @@ export const StoryDisplay = ({
                   <div className="w-2/3 md:w-1/2 text-right flex items-center justify-end">
                     <button
                       onClick={() => handleLikeBook(selectedBook?.id, userId)}
-                      className={selectedBook?.likedBy.includes(userId) ? "flex relative px-4 py-2 mx-3 text-stone-950  rounded-full hover:bg-orange-400 bg-orange-400 shadow-lg border-2 border-stone-500"
-                      : "flex relative px-4 py-2 mx-3 text-stone-950 rounded-full hover:bg-orange-400 shadow-lg border-2 bg-transparent border-stone-500"}
+                      className={
+                        selectedBook?.likedBy.includes(userId)
+                          ? "flex relative px-4 py-2 mx-3 text-stone-950  rounded-full hover:bg-orange-400 bg-orange-400 shadow-lg border-2 border-stone-500 transition ease-in-out hover:scale-110 duration-300"
+                          : "flex relative px-4 py-2 mx-3 text-stone-950 rounded-full hover:bg-orange-400 shadow-lg border-2 bg-transparent border-stone-500 transition ease-in-out hover:scale-110 duration-300"
+                      }
                     >
-                      <HandThumbUpIcon className="h-6 w-6" />
+                      <HandThumbUpIcon className="h-6 w-6 " />
                       <span className="absolute -top-3 -right-3 px-2 font-sans font-medium text-sm bg-slate-700 border-2 border-teal-500 rounded-bl-xl text-teal-500 rounded-full">
-                        {selectedBook?.likes}
+                        {selectedBook?.likes || 0}
                       </span>
                     </button>
                     <button
                       onClick={() => handlePage("down")}
-                      className=" px-3 py-2 text-stone-950 bg-transparent rounded-tl-full rounded-bl-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                      className="transition ease-in-out hover:scale-105 duration-300 px-3 py-2 text-stone-950 bg-transparent rounded-tl-full rounded-bl-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
                     >
                       <ChevronLeftIcon className="h-6 w-6" />
                     </button>
 
                     <button
                       type="submit"
-                      className="px-4 py-2 mx-1  text-stone-950 bg-transparent font-sans font-semibold rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                      className="transition ease-in-out hover:scale-105 duration-300 px-4 py-2 mx-1  text-stone-950 bg-transparent font-sans font-semibold rounded hover:bg-orange-400 shadow-lg border-2 border-stone-500"
                     >
                       {page}
                     </button>
                     <button
                       onClick={() => handlePage("up")}
                       type="submit"
-                      className="px-3 py-2  text-stone-950 bg-transparent rounded-tr-full rounded-br-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
+                      className="transition ease-in-out hover:scale-105 duration-300 px-3 py-2  text-stone-950 bg-transparent rounded-tr-full rounded-br-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"
                     >
                       <ChevronRightIcon className="h-6 w-6" />
                     </button>
@@ -260,7 +266,7 @@ export const StoryDisplay = ({
             role="alert"
           >
             <div className="flex p-4">
-              {  processing
+              {processing
                 ? "Saving"
                 : myBooks.length < 12
                 ? "Save Story"

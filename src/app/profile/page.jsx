@@ -19,7 +19,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Profile = ({ user }) => {
+const Profile = ({ user, setMessage }) => {
   const [settings, setSettings] = useState(false);
   const [contact, setContact] = useState(false);
 
@@ -82,7 +82,7 @@ const Profile = ({ user }) => {
               <Menu.Item>
                 {({ active }) => (
                  <>
-                    <a  onClick={() => setSettings(!settings)}
+                    <a  onClick={() => { setSettings(!settings); setContact(false) }}
                       href="#"
                       className={classNames(
                         active
@@ -94,14 +94,14 @@ const Profile = ({ user }) => {
                   <Cog6ToothIcon className="h-6 w-6 mr-2" /> Settings   <ChevronDownIcon className="-mr-1 h-5 w-5  " aria-hidden="true" />
                     </a>
                   
-                <div> { settings ? <Settings /> : ""}</div></>
+                <div> { settings ? <Settings setMessage={setMessage} /> : ""}</div></>
                 )}
 
               </Menu.Item>
               <Menu.Item>
               {({ active }) => (
                  <>
-                    <a  onClick={() => setContact(!contact)}
+                    <a  onClick={() => { setContact(!contact); setSettings(false) }}
                       href="#"
                       className={classNames(
                         active
@@ -113,7 +113,7 @@ const Profile = ({ user }) => {
                   <EnvelopeIcon className="h-6 w-6 mr-2" /> Contact   <ChevronDownIcon className="-mr-1 h-5 w-5  " aria-hidden="true" />
                     </a>
                   
-                <div> { contact ? <Contact /> : ""}</div></>
+                <div> { contact ? <Contact setMessage={setMessage} /> : ""}</div></>
                 )}
               </Menu.Item>
               <Menu.Item>
