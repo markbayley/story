@@ -16,7 +16,6 @@ export const StoryDisplay = ({
   setPage,
   audio,
   audioRef,
-  loading,
   storyUnsaved,
   imagesUnsaved,
   setOpen,
@@ -30,6 +29,7 @@ export const StoryDisplay = ({
   selectedBook,
   userId,
   setMessage,
+  extractTitleFromStory,
 }) => {
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -102,14 +102,16 @@ export const StoryDisplay = ({
       return (
         <div className="h-full flex items-center justify-center text-center mx-6 px-6">
           <div className="text-3xl italic">
-            This tale was created by{" "}
-            {selectedBook?.displayName || selectedBook.userId}.<br /> If you
+            This tale was created by...
+            <br />
+            {selectedBook?.displayName || " a mysterious author"}.<br /> If you
             enjoyed reading their story please give it a like!
           </div>
         </div>
       );
     }
 
+  
     // Render each paragraph separately
     return (
       <div>
@@ -122,11 +124,14 @@ export const StoryDisplay = ({
     );
   };
 
+  console.log("selectedBook", selectedBook);
+ 
+
   return (
     <>
       <div className="fade-in">
         <div
-          className="md:mx-[15%] lg:mx-[3%] xl:mx-[10%] border-r sm:border-l-1 sm:rounded-xl bg-orange-200 
+          className=" border-r sm:border-l-1 sm:rounded-xl bg-orange-200 
               lg:bg-gradient-to-r from-orange-200 from-20% via-stone-700 via-50% to-orange-200 to-60% ..."
         >
           {/* Image Section */}
@@ -161,11 +166,11 @@ export const StoryDisplay = ({
               <div className="flex justify-between text-stone-900">
                 <h1 className="text-4xl xl:text-5xl font-bold capitalize font-antiqua">
                   {storySelected
-                    ? storySelected?.split("Once")[0]
+                    ? extractTitleFromStory(storySelected)
                     : storyUnsaved
-                    ? storyUnsaved?.split("Once")[0]
+                    ? extractTitleFromStory(storyUnsaved)
                     : story
-                    ? story?.split("Once")[0]
+                    ? extractTitleFromStory(story)
                     : "Once Upon A Time..."}
                 </h1>
                 <button
@@ -182,7 +187,7 @@ export const StoryDisplay = ({
 
               <div className="h-full text-stone-900 xs:pr-4 lg:pr-0 text-3xl  py-4  w-full  no-scrollbar overflow-y-auto">
                 {!storySelected && !storyUnsaved && !story
-                  ? ""
+                  ? "No story selected"
                   : getStoryText(storySelected || storyUnsaved || story, page)}
               </div>
 
@@ -207,7 +212,7 @@ export const StoryDisplay = ({
                     <button
                       onClick={() => handleLikeBook(selectedBook?.id, userId)}
                       className={
-                        selectedBook?.likedBy.includes(userId)
+                        selectedBook?.likedBy?.includes(userId)
                           ? "flex relative px-4 py-2 mx-3 text-stone-950  rounded-full hover:bg-orange-400 bg-orange-400 shadow-lg border-2 border-stone-500 transition ease-in-out hover:scale-110 duration-300"
                           : "flex relative px-4 py-2 mx-3 text-stone-950 rounded-full hover:bg-orange-400 shadow-lg border-2 bg-transparent border-stone-500 transition ease-in-out hover:scale-110 duration-300"
                       }

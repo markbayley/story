@@ -13,15 +13,16 @@ export const StorySelector = ({
   setMyStoriesSelected,
   handleLikeBook,
   userId,
+  handleDeleteBook
 }) => {
   return (
     <>
-      <div className="xl:fixed bottom-0 left-0 right-0 text-2xl text-orange-300 font-bold font-antiqua px-5">
+      <div className="mt-5 lg:mt-16 text-2xl text-orange-300 font-bold font-antiqua px-5 ">
         <button
           className={
             !myStoriesSelected
               ? "text-orange-300"
-              : "text-gray-500 hover:text-orange-300"
+              : "text-white hover:text-orange-300"
           }
           onClick={() => setMyStoriesSelected(false)}
         >
@@ -32,7 +33,7 @@ export const StorySelector = ({
             className={
               myStoriesSelected
                 ? "text-orange-300 mx-4"
-                : "text-gray-500 mx-3 hover:text-orange-300"
+                : "text-white mx-3 hover:text-orange-300"
             }
             onClick={() => setMyStoriesSelected(true)}
           >
@@ -42,7 +43,7 @@ export const StorySelector = ({
 
         <div className="flex justify-start text-orange-300 font-light">
           {myStoriesSelected ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-2 md:text-xs mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6  gap-2 md:text-xs mb-3">
               {myBooks.map((book) => (
                 <div
                   onClick={() => handlePreviewMine(book.id)}
@@ -62,7 +63,7 @@ export const StorySelector = ({
                     </div>
                   </button>
 
-                  <div className="z-10 left-1 top-1 absolute hover:bg-teal-500 rounded-tl-lg text-teal-500 border-2 border-teal-500 hover:border-slate-700 rounded-full bg-slate-700 hover:text-slate-700">
+                  <div onClick={() => handleDeleteBook(book.id)} className="z-10 left-1 top-1 absolute hover:bg-teal-500 rounded-tl-lg text-teal-500 border-2 border-teal-500 hover:border-slate-700 rounded-full bg-slate-700 hover:text-slate-700">
                     {userId == book.userId ? (
                       <TrashIcon className="h-10 w-10 lg:h-6 lg:w-6 p-1" />
                     ) : (
@@ -89,7 +90,7 @@ export const StorySelector = ({
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-2 md:text-xs mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6  gap-2 md:text-xs mb-3">
               {allBooks
                 .slice()
                 .sort((a, b) => (b.likes || 0) - (a.likes || 0))

@@ -9,18 +9,16 @@ export const StoryForm = ({
   prompt,
   setPrompt,
   handleSubmit,
-  message,
   setMessage,
   loading,
-  setOpen,
   story,
-  handleOpen
+  handleOpen,
 }) => {
   return (
-    <div className="flex justify-center xl:justify-between xs:mx-0 sm:mx-32 lg:mr-6 font-inter">
+    <div className="flex justify-start font-inter w-full sm:w-[60vw] lg:w-[36vw]">
       <form
         onSubmit={handleSubmit}
-        className="mt-2 lg:mr-6 rounded-xl lg:w-3/4 xl:w-1/3  "
+        className="mt-2 rounded-xl"
       >
         <div className=" text-orange-300 px-4 pb-4">
           <h1 className="font-bold font-antiqua text-5xl ">Storyteller AI</h1>
@@ -41,9 +39,9 @@ export const StoryForm = ({
           </a>
           Your imagination is limitless!
         </h3>
-        <div className="flex items-center pl-4">
+        <div className="flex items-center justify-center ">
           <hr className="h-px my-4 bg-yellow-700 border-0 dark:bg-yellow-600 w-2/5" />{" "}
-          <SparklesIcon className="h-6 w-6 mx-2 text-yellow-700"/>{" "}
+          <SparklesIcon className="h-6 w-6 mx-4 text-yellow-700" />{" "}
           <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-yellow-600 w-2/5" />
         </div>
         <div className="mx-4 rounded-xl">
@@ -59,8 +57,7 @@ export const StoryForm = ({
             placeholder="A magical castle in the sky"
             value={prompt}
             onChange={(e) => {
-              setPrompt(e.target.value),
-              setMessage("")
+              setPrompt(e.target.value), setMessage("");
             }}
             className="p-2 w-full rounded-md border-gray-600 border text-[15px]"
           />
@@ -76,28 +73,27 @@ export const StoryForm = ({
           ) : (
             <button
               type="submit"
-              className={"w-full text-white px-4 py-2 m-4  rounded bg-indigo-600 hover:bg-indigo-500 flex justify-center border-b-2 border-stone-700"}
-                        
+              className={
+                "w-full text-white px-4 py-2 m-4  rounded-md bg-indigo-600 hover:bg-indigo-500 flex justify-center border-b-2 border-stone-700"
+              }
             >
               Create
               <PaintBrushIcon className="h-6 w-6 mx-2" />
             </button>
           )}
-     { story &&
+       
             <button
               onClick={handleOpen}
-              className="px-4 py-2 m-4 text-stone-950 bg-blue-300 rounded-full hover:bg-blue-400 flex border-b-2 border-stone-700"
+              className={
+                "w-full text-white px-4 py-2 m-4  rounded-md bg-indigo-600 hover:bg-indigo-500 flex justify-center border-b-2 border-stone-700"}
             >
-              Open
+              Viewer
               <BookOpenIcon className="h-6 w-6 mx-2" />
             </button>
-}
-     
+        
         </div>
-       
       </form>
       {/* <SignIn /> */}
-    
     </div>
   );
 };

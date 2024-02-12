@@ -17,7 +17,6 @@ import {
   updateDoc,
   increment,
   doc,
-  onSnapshot,
   arrayUnion,
   getDoc,
 } from "firebase/firestore";
@@ -46,7 +45,6 @@ export default function StoryPage() {
   const [allBooks, setAllBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [unsavedBook, setUnsavedBook] = useState([]);
-
   const [myStoriesSelected, setMyStoriesSelected] = useState(false);
 
   useEffect(() => {
@@ -96,7 +94,7 @@ export default function StoryPage() {
       // Uncomment if you want to fetch audio
       // const audioUrl = await fetchAudio(storyData.story);
       // setAudio(audioUrl);
-      setUnsavedBook([storyData.story, imageData.images]);
+      setUnsavedBook([storyData.story, imageData.images, storyTitle]);
       //console.log("UnsavedBook", unsavedBook);
     } catch (error) {
       console.error("Error:", error);
@@ -125,7 +123,7 @@ export default function StoryPage() {
   ///////////////// SAVE BOOK //////////////////
 
   const [user] = useAuthState(auth);
-  console.log("user", user);
+
   useEffect(() => {
     if (user) {
       setUserId(user.uid);
@@ -184,8 +182,11 @@ export default function StoryPage() {
     setMessage("Storybook Saved!");
   };
 
+ 
+
   const saveBookToFirestore = async (userId, story, imageUrls) => {
     const db = getFirestore();
+    const creatorName = user.displayName
     const likedBy = [];
     const likes = 0;
     const book = {
@@ -194,6 +195,7 @@ export default function StoryPage() {
       likedBy,
       story,
       imageUrls,
+      creatorName,
       createdAt: new Date(),
     };
     //console.log("Saving book with image URLs:", imageUrls);
@@ -280,9 +282,6 @@ export default function StoryPage() {
     if (docSnap.exists()) {
       const bookData = docSnap.data();
 
-      // if (selectedBook && selectedBook.id === bookId) {
-      //   setSelectedBook({...selectedBook, likes: (selectedBook.likes || 0) + 1});
-      // }
       // Check if the user has already liked the book
       if (bookData.likedBy && !bookData.likedBy.includes(userId)) {
         // Update the document to add the user to the likedBy array and increment likes
@@ -316,7 +315,7 @@ export default function StoryPage() {
       const updatedBooks = myBooks.filter((book) => book.id !== bookId);
       setMyBooks(updatedBooks);
     } catch (error) {
-      console.error("Failed to delete book:", error);
+      setMessage("Failed To Delete Book");
       // Optionally handle the error, e.g., show an error message to the user
     }
     setMessage("Book Deleted!");
@@ -337,7 +336,7 @@ export default function StoryPage() {
   //////////////// VIEWING BOOKS /////////////////
 
   const handlePreviewMine = (bookId) => {
-    console.log("bookId", bookId);
+   
 
     const book = myBooks.find((b) => b.id === bookId);
     if (book) {
@@ -349,7 +348,7 @@ export default function StoryPage() {
   };
 
   const handlePreviewAll = (bookId) => {
-    console.log("bookId", bookId);
+  
     const book = allBooks.find((b) => b.id === bookId);
     if (book) {
       setSelectedBook(book);
@@ -361,8 +360,6 @@ export default function StoryPage() {
 
   const handleOpen = () => {
     setSelectedBook(unsavedBook[0], unsavedBook[1]);
-    // setStory(unsavedBook[0])
-    // setImages(unsavedBook[1])
     setOpen(true);
     setDismiss(false);
   };
@@ -381,11 +378,13 @@ export default function StoryPage() {
     setDismiss(false);
   };
 
-  console.log("userId", userId);
+
+
+
 
   return (
     <>
-      <div className="bg-[url('../../public/background5.png')] bg-cover min-h-screen overflow-hidden">
+      <div className="bg-[url('../../public/background5.png')] bg-cover min-h-screen overflow-hidden no-scroll ">
         <StatusBar
           message={message}
           resetStory={resetStory}
@@ -395,17 +394,14 @@ export default function StoryPage() {
           setMessage={setMessage}
         />
 
-        <div>
+        <div className="mx-0 lg:mx-[10%] no-scroll pt-16">
           {!open ? (
             <>
               <StoryForm
-                setLoading={setLoading}
                 loading={loading}
-                setOpen={setOpen}
                 prompt={prompt}
                 setPrompt={setPrompt}
                 handleSubmit={handleSubmit}
-                message={message}
                 story={story}
                 handleOpen={handleOpen}
                 setMessage={setMessage}
@@ -417,40 +413,36 @@ export default function StoryPage() {
                 extractTitleFromStory={extractTitleFromStory}
                 handlePreviewMine={handlePreviewMine}
                 handlePreviewAll={handlePreviewAll}
-                loading={loading}
-                processing={processing}
-                handleDeleteBook={handleDeleteBook}
                 myStoriesSelected={myStoriesSelected}
                 setMyStoriesSelected={setMyStoriesSelected}
                 handleLikeBook={handleLikeBook}
                 userId={userId}
+                handleDeleteBook={handleDeleteBook}
               />
             </>
           ) : (
             <StoryDisplay
-              story={story}
               storyUnsaved={unsavedBook[0]}
               imagesUnsaved={unsavedBook[1]}
               storySelected={selectedBook?.story}
               imagesSelected={selectedBook?.imageUrls}
-              handleLikeBook={handleLikeBook}
               page={page}
               setPage={setPage}
-              resetStory={resetStory}
               audio={audio}
               audioRef={audioRef}
-              loading={loading}
               setOpen={setOpen}
               handleSaveBook={handleSaveBook}
               processing={processing}
-              message={message}
               myBooks={myBooks}
+              story={story}
               dismiss={dismiss}
               setDismiss={setDismiss}
+              handleLikeBook={handleLikeBook}
               selectedBook={selectedBook}
               userId={userId}
-              bookId={bookId}
               setMessage={setMessage}
+              extractTitleFromStory={extractTitleFromStory}
+              unsavedBook={unsavedBook}
             />
           )}
         </div>

@@ -157,9 +157,23 @@ h6 {
   text-shadow: 0px 1px 0px #273130, 0px -1px 0px rgba(0,0,0,.7);
 }
 
-.no-scrollbar::-webkit-scrollbar { 
+/* .no-scrollbar::-webkit-scrollbar { 
   display: none; 
-} 
+}  */
+
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 0;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
 
 @keyframes fade-in {
      from {

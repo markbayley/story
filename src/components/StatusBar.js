@@ -20,14 +20,12 @@ export const StatusBar = ({
   const [userStatus, setUserStatus] = useState(false);
 
   return (
-    <div className="text-white px-4 py-2 flex justify-between text-xs">
+    <div className="text-white px-4 py-2 flex justify-between text-xs fixed top-0 w-full z-20">
       <div onClick={resetStory} className="flex cursor-pointer">
         <Image
           src={pic7}
-          width={40}
-          height={40}
           alt="logo"
-          className="rounded-full  xs:ml-2 ml-0"
+          className="rounded-full h-10 w-10 xs:ml-2 ml-0"
         />
       </div>
     { message != "" &&  <div className="border-2 animate-pulse px-4 flex items-center lg:mr-[8vw] text-[15px] font-light text-white bg-orange-400  rounded-br-lg rounded-full hover:bg-orange-400 shadow-lg  border-gray-200">{message}</div> }
@@ -40,7 +38,6 @@ export const StatusBar = ({
             setMyStoriesSelected={setMyStoriesSelected}
             setMessage={setMessage}
           />
-       
         </div>
       ) : (
         <AuthDisplay userStatus={userStatus} setUserStatus={setUserStatus} />
