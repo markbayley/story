@@ -30,14 +30,12 @@ const Profile = ({ user, setMessage }) => {
         <div className="hover:text-gray-400 text-white">
           <Menu.Button className=" inline-flex w-full justify-center items-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold  shadow-sm ring-1 ring-inset ring-gray-300 ">
             {user.photoURL ? (
-              <Image
-                src={
-                  "https://firebasestorage.googleapis.com/v0/b/story-60f4f.appspot.com/o/images%2FKtAsHWHSvmfJGHfGe61TIcNFAn83%2Fbook_1706741630951%2Fundefined?alt=media&token=1cb22fa9-a474-4a0d-b9ce-4b5a50f4348e"
-                }
-                width={30}
-                height={30}
+              <img
+                src={user.photoURL}
+                // width={30}
+                // height={30}
                 alt="logo"
-                className="rounded-full border-2 border-indigo-600 xs:ml-2 ml-0"
+                className="rounded-full  h-8 w-8 object-cover   xs:ml-2 ml-0"
               />
             ) : (
               <UserCircleIcon className="h-6 w-6  " />

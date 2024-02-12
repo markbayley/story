@@ -44,7 +44,7 @@ export default function StoryPage() {
   const [myBooks, setMyBooks] = useState([]);
   const [allBooks, setAllBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
- // const [unsavedBook, setUnsavedBook] = useState([]);
+  // const [unsavedBook, setUnsavedBook] = useState([]);
   const [myStoriesSelected, setMyStoriesSelected] = useState(false);
 
   useEffect(() => {
@@ -182,12 +182,11 @@ export default function StoryPage() {
     setMessage("Storybook Saved!");
   };
 
- 
-
   const saveBookToFirestore = async (userId, storyUnsaved, imageUrls) => {
     const db = getFirestore();
-    const creatorName = user.displayName
-    const story = storyUnsaved
+    const creatorName = user.displayName;
+    const creatorPhotoURL = user.photoURL;
+    const story = storyUnsaved;
     const likedBy = [];
     const likes = 0;
     const book = {
@@ -197,6 +196,7 @@ export default function StoryPage() {
       story,
       imageUrls,
       creatorName,
+      creatorPhotoURL,
       createdAt: new Date(),
     };
     //console.log("Saving book with image URLs:", imageUrls);
@@ -257,9 +257,9 @@ export default function StoryPage() {
   };
 
   /////////////// LIKE UPDATE BOOK
-//|| myBooks[0]?.userId
-  const handleLikeBook = async ( bookId, userId) => {
-    if (userId === selectedBook?.userId ) {
+  //|| myBooks[0]?.userId
+  const handleLikeBook = async (bookId, userId) => {
+    if (userId === selectedBook?.userId) {
       setMessage("Can't Like Own Book!");
       return;
     }
@@ -337,7 +337,6 @@ export default function StoryPage() {
   //////////////// VIEWING BOOKS /////////////////
 
   const handlePreviewMine = (bookId) => {
-   
     const book = myBooks.find((b) => b.id === bookId);
     if (book) {
       setSelectedBook(book);
@@ -348,7 +347,6 @@ export default function StoryPage() {
   };
 
   const handlePreviewAll = (bookId) => {
-  
     const book = allBooks.find((b) => b.id === bookId);
     if (book) {
       setSelectedBook(book);
@@ -378,9 +376,7 @@ export default function StoryPage() {
     setDismiss(false);
   };
 
-
- console.log("userId:", userId, "selectedBook.userId:",selectedBook?.userId )
-
+  console.log("userId:", userId, "selectedBook.userId:", selectedBook?.userId);
 
   return (
     <>
@@ -442,7 +438,6 @@ export default function StoryPage() {
               setMessage={setMessage}
               extractTitleFromStory={extractTitleFromStory}
               loading={loading}
-              
             />
           )}
         </div>
