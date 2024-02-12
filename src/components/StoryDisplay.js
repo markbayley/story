@@ -5,9 +5,13 @@ import {
   ArrowUpTrayIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  HandThumbDownIcon,
   HandThumbUpIcon,
+  ShareIcon,
+  TrashIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 export const StoryDisplay = ({
   storySelected,
@@ -24,12 +28,12 @@ export const StoryDisplay = ({
   myBooks,
   dismiss,
   setDismiss,
-  story,
   handleLikeBook,
   selectedBook,
   userId,
   setMessage,
   extractTitleFromStory,
+  loading
 }) => {
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -41,7 +45,7 @@ export const StoryDisplay = ({
     const imageSrc =
       page == 5
         ? getDefaultImage(page) // Default image at end of book
-        : imagesSelected || (imagesUnsaved && imagesSelected?.length > 0)
+        : imagesSelected?.length > 0
         ? imagesSelected[page]
         : imagesUnsaved?.length > 0
         ? `data:image/jpeg;base64,${imagesUnsaved[page]}`
@@ -96,9 +100,9 @@ export const StoryDisplay = ({
     // Slice the paragraphs for the current page
     const currentPageParagraphs = paragraphs.slice(startIndex, endIndex);
 
-    const pages = paragraphs.length / 2;
+    // const pages = paragraphs.length / 2;
 
-    if (currentPage == pages) {
+    if (currentPage == 5) {
       return (
         <div className="h-full flex items-center justify-center text-center mx-6 px-6">
           <div className="text-3xl italic">
@@ -125,10 +129,53 @@ export const StoryDisplay = ({
   };
 
   console.log("selectedBook", selectedBook);
- 
+  
+  // const [liked, setLiked ] = useState(false)
 
   return (
     <>
+<div className="z-10 right-10 bottom-10 absolute flex flex-col justify-between items-center h-48  w-10 ">
+<div
+          //    onClick={(event) => {
+          //   event.stopPropagation();
+          //   handleDeleteBook(book.id);
+          // }}
+          className=" text-indigo-500 border-2 rounded-lg border-indigo-500 "
+        >
+          {/* {userId == book.userId && ( */}
+            <ShareIcon className="h-9 w-9 p-1" />
+          {/* ) } */}
+        </div>
+        {/* Delete Icon */}
+      
+          {/* Delete Icon */}
+          <div
+          //    onClick={(event) => {
+          //   event.stopPropagation();
+          //   handleDeleteBook(book.id);
+          // }}
+          className=" text-teal-500 border-2 rounded-lg border-teal-500 "
+        >
+          {/* {userId == book.userId && ( */}
+            <HandThumbUpIcon className="h-9 w-9  p-1" />
+          {/* ) } */}
+        </div>
+        <div
+          //    onClick={(event) => {
+          //   event.stopPropagation();
+          //   handleDeleteBook(book.id);
+          // }}
+          className=" text-pink-600 border-2 rounded-lg border-pink-600 "
+        >
+          {/* {userId == book.userId && ( */}
+            <TrashIcon className="h-9 w-9  p-1" />
+          {/* ) } */}
+        </div>
+        </div>
+
+
+
+
       <div className="fade-in">
         <div
           className=" border-r sm:border-l-1 sm:rounded-xl bg-orange-200 
@@ -169,8 +216,8 @@ export const StoryDisplay = ({
                     ? extractTitleFromStory(storySelected)
                     : storyUnsaved
                     ? extractTitleFromStory(storyUnsaved)
-                    : story
-                    ? extractTitleFromStory(story)
+                    // : story
+                    // ? extractTitleFromStory(story)
                     : "Once Upon A Time..."}
                 </h1>
                 <button
@@ -178,7 +225,7 @@ export const StoryDisplay = ({
                     setOpen(false);
                     setMessage("");
                   }}
-                  className="w-12 hover:text-orange-500 roboto text-center"
+                  className="w-12 hover:text-orange-500 text-center"
                 >
                   <XMarkIcon className="h-6 w-12" />
                   Close
@@ -186,9 +233,9 @@ export const StoryDisplay = ({
               </div>
 
               <div className="h-full text-stone-900 xs:pr-4 lg:pr-0 text-3xl  py-4  w-full  no-scrollbar overflow-y-auto">
-                {!storySelected && !storyUnsaved && !story
-                  ? "No story selected"
-                  : getStoryText(storySelected || storyUnsaved || story, page)}
+                {!storySelected && !storyUnsaved && !loading
+                  ? <div className="flex justify-center items-center h-full italic text-center">Please click on a story or create a new story to start reading here.</div>
+                  : getStoryText(storySelected || storyUnsaved , page)}
               </div>
 
               {/* Controls Section */}
@@ -209,19 +256,21 @@ export const StoryDisplay = ({
                   </div>
 
                   <div className="w-2/3 md:w-1/2 text-right flex items-center justify-end">
+                    {selectedBook?.userId !== userId && selectedBook?.userId != undefined &&
                     <button
                       onClick={() => handleLikeBook(selectedBook?.id, userId)}
-                      className={
-                        selectedBook?.likedBy?.includes(userId)
-                          ? "flex relative px-4 py-2 mx-3 text-stone-950  rounded-full hover:bg-orange-400 bg-orange-400 shadow-lg border-2 border-stone-500 transition ease-in-out hover:scale-110 duration-300"
-                          : "flex relative px-4 py-2 mx-3 text-stone-950 rounded-full hover:bg-orange-400 shadow-lg border-2 bg-transparent border-stone-500 transition ease-in-out hover:scale-110 duration-300"
+                      className={"flex relative px-4 py-2 mx-3 text-stone-950 rounded-full hover:bg-orange-400 shadow-lg border-2 bg-transparent border-stone-500 transition ease-in-out hover:scale-110 duration-300"
                       }
                     >
                       <HandThumbUpIcon className="h-6 w-6 " />
-                      <span className="absolute -top-3 -right-3 px-2 font-sans font-medium text-sm bg-slate-700 border-2 border-teal-500 rounded-bl-xl text-teal-500 rounded-full">
+                      <span className={selectedBook?.likedBy?.includes(userId)
+                          ? "absolute -top-3 -right-3 px-2 font-sans  text-sm bg-teal-500 border-2 border-teal-500 rounded-bl-xl text-white rounded-full"
+                          : "absolute -top-3 -right-3 px-2 font-sans  text-sm bg-slate-700 border-2 border-teal-500 rounded-bl-xl text-teal-500 rounded-full"
+                      } >
                         {selectedBook?.likes || 0}
                       </span>
                     </button>
+}
                     <button
                       onClick={() => handlePage("down")}
                       className="transition ease-in-out hover:scale-105 duration-300 px-3 py-2 text-stone-950 bg-transparent rounded-tl-full rounded-bl-full hover:bg-orange-400 shadow-lg border-2 border-stone-500"

@@ -60,23 +60,35 @@ const Profile = ({ user, setMessage }) => {
           <Menu.Items className="absolute right-0 z-10 mt-2 w-80 md:w-96 origin-top-right rounded-lg bg-sky-950 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               <Menu.Item>
-                {({ active }) => (
+               
+               
+                   <div className="flex justify-between w-full">
                   <a
                     href="#"
-                    className={classNames(
-                      active
-                        ? "flex items-center bg-sky-900 text-white"
-                        : "flex items-center bg-sky-950 text-white",
-                      "block px-4 py-2 text-sm"
-                    )}
-                  >
+                    className={"flex items-center bg-sky-950 text-white  px-4 py-2 text-sm"} >
+                 
                     <div>
                       {" "}
                       Signed in as
                       <span className="flex  font-semibold"> {user.email}</span>
                     </div>
                   </a>
-                )}
+                
+                    <button
+                      type="submit"
+                      onClick={() => {
+                        signOut(auth);
+                        sessionStorage.removeItem("user");
+                      }}
+                  
+                       className= "flex items-center text-white px-4 py-2 m-4 rounded-md bg-indigo-600 hover:bg-indigo-500  justify-center border-b-2 border-stone-700"
+                  
+                    >
+                      <UserMinusIcon className="h-6 w-6 mr-2 " /> Sign Out
+                    </button>
+                   </div>
+              
+               
               </Menu.Item>
               <hr className="h-px my-1 bg-gray-700 border-0" />
               <Menu.Item>
@@ -124,14 +136,14 @@ const Profile = ({ user, setMessage }) => {
                       active
                         ? "flex items-center bg-sky-900 text-white"
                         : "flex items-center bg-sky-950 text-white",
-                      "block px-4 py-2 text-sm"
+                      "block px-4 py-2 text-sm mb-2"
                     )}
                   >
                     <CurrencyDollarIcon className="h-6 w-6 mr-2" /> Credits
                   </a>
                 )}
               </Menu.Item>
-              <hr className="h-px my-1  bg-gray-700 border-0" />
+              {/* <hr className="h-px my-1  bg-gray-700 border-0" />
               <Menu.Item>
                 {({ active }) => (
                   <button
@@ -150,7 +162,7 @@ const Profile = ({ user, setMessage }) => {
                     <UserMinusIcon className="h-6 w-6 mr-2 " /> Sign out
                   </button>
                 )}
-              </Menu.Item>
+              </Menu.Item> */}
             </div>
           </Menu.Items>
         </Transition>

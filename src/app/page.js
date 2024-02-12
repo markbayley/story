@@ -29,8 +29,8 @@ export default function StoryPage() {
   const [bookId, setBookId] = useState();
 
   const [prompt, setPrompt] = useState("");
-  const [story, setStory] = useState("");
-  const [images, setImages] = useState([]);
+  const [storyUnsaved, setStoryUnsaved] = useState("");
+  const [imagesUnsaved, setImagesUnsaved] = useState([]);
   const [audio, setAudio] = useState("");
   const [message, setMessage] = useState("");
   const [page, setPage] = useState(0);
@@ -44,7 +44,7 @@ export default function StoryPage() {
   const [myBooks, setMyBooks] = useState([]);
   const [allBooks, setAllBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
-  const [unsavedBook, setUnsavedBook] = useState([]);
+ // const [unsavedBook, setUnsavedBook] = useState([]);
   const [myStoriesSelected, setMyStoriesSelected] = useState(false);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function StoryPage() {
       setLoading(true);
       const storyData = await fetchStory(prompt);
       setMessage("Story Created!");
-      setStory(storyData.story);
+      setStoryUnsaved(storyData.story);
       //console.log("storyData", storyData, "story", story);
       const storyTitle = extractTitleFromStory(storyData.story);
       console.log("storyTitle", storyTitle);
@@ -87,14 +87,14 @@ export default function StoryPage() {
 
       setMessage("Creating Images...");
       const imageData = await fetchImages(storyData.story);
-      setImages(imageData.images);
+      setImagesUnsaved(imageData.images);
       //console.log("imageData.images", imageData.images);
       setMessage("Images Finished!");
 
       // Uncomment if you want to fetch audio
       // const audioUrl = await fetchAudio(storyData.story);
       // setAudio(audioUrl);
-      setUnsavedBook([storyData.story, imageData.images, storyTitle]);
+      //setUnsavedBook([storyData.story, imageData.images, storyTitle]);
       //console.log("UnsavedBook", unsavedBook);
     } catch (error) {
       console.error("Error:", error);
@@ -105,18 +105,18 @@ export default function StoryPage() {
     setLoading(false);
   };
 
-  const extractTitleFromStory = (story) => {
-    const titleEndIndex = story.indexOf("Once upon a time");
+  const extractTitleFromStory = (storyText) => {
+    const titleEndIndex = storyText.indexOf("Once upon a time");
     if (titleEndIndex === -1) {
       // Handle the case where the phrase is not found
       return "Untitled_" + new Date().getTime();
     }
     // Extract the first three words as the title
-    return story
+    return storyText
       .substring(4, titleEndIndex)
       .trim()
       .split(" ")
-      .slice(0, 2)
+      .slice(0, 3)
       .join(" ");
   };
 
@@ -136,12 +136,12 @@ export default function StoryPage() {
   };
 
   // Function to upload images
-  const uploadImages = async (images, userId) => {
+  const uploadImages = async (imagesUnsaved, userId) => {
     const storage = getStorage();
     const bookId = generateBookId();
     let imageUrls = [];
 
-    for (const image of images) {
+    for (const image of imagesUnsaved) {
       const uniqueImageId = `${bookId}_${Date.now()}`; // Ensure unique ID for each image
       const imageRef = ref(
         storage,
@@ -163,7 +163,7 @@ export default function StoryPage() {
     setProcessing(true);
     setMessage("Saving Storybook...");
     try {
-      const validImages = images.filter((image) => image != null); // Filter out undefined or null images
+      const validImages = imagesUnsaved.filter((image) => image != null); // Filter out undefined or null images
       const convertedImages = validImages.map((base64Image) =>
         base64ToBlob(base64Image, "image/jpeg")
       );
@@ -171,7 +171,7 @@ export default function StoryPage() {
       const { bookId, imageUrls } = await uploadImages(convertedImages, userId);
 
       // Now use bookId and imageUrls to save the book's data to Firestore
-      await saveBookToFirestore(userId, story, imageUrls, bookId);
+      await saveBookToFirestore(userId, storyUnsaved, imageUrls, bookId);
       // After saving the book, refetch the books list
       fetchUserBooks();
     } catch (error) {
@@ -184,9 +184,10 @@ export default function StoryPage() {
 
  
 
-  const saveBookToFirestore = async (userId, story, imageUrls) => {
+  const saveBookToFirestore = async (userId, storyUnsaved, imageUrls) => {
     const db = getFirestore();
     const creatorName = user.displayName
+    const story = storyUnsaved
     const likedBy = [];
     const likes = 0;
     const book = {
@@ -256,9 +257,9 @@ export default function StoryPage() {
   };
 
   /////////////// LIKE UPDATE BOOK
-
-  const handleLikeBook = async (bookId, userId) => {
-    if (userId === selectedBook?.userId || myBooks[0]?.userId) {
+//|| myBooks[0]?.userId
+  const handleLikeBook = async ( bookId, userId) => {
+    if (userId === selectedBook?.userId ) {
       setMessage("Can't Like Own Book!");
       return;
     }
@@ -337,7 +338,6 @@ export default function StoryPage() {
 
   const handlePreviewMine = (bookId) => {
    
-
     const book = myBooks.find((b) => b.id === bookId);
     if (book) {
       setSelectedBook(book);
@@ -359,14 +359,14 @@ export default function StoryPage() {
   };
 
   const handleOpen = () => {
-    setSelectedBook(unsavedBook[0], unsavedBook[1]);
+    setSelectedBook(storyUnsaved, imagesUnsaved);
     setOpen(true);
     setDismiss(false);
   };
 
   const resetStory = () => {
-    setStory("");
-    setImages([]);
+    setStoryUnsaved("");
+    setImagesUnsaved([]);
     setAudio("");
     setPrompt("");
     setMessage("");
@@ -379,7 +379,7 @@ export default function StoryPage() {
   };
 
 
-
+ console.log("userId:", userId, "selectedBook.userId:",selectedBook?.userId )
 
 
   return (
@@ -402,7 +402,6 @@ export default function StoryPage() {
                 prompt={prompt}
                 setPrompt={setPrompt}
                 handleSubmit={handleSubmit}
-                story={story}
                 handleOpen={handleOpen}
                 setMessage={setMessage}
               />
@@ -418,12 +417,13 @@ export default function StoryPage() {
                 handleLikeBook={handleLikeBook}
                 userId={userId}
                 handleDeleteBook={handleDeleteBook}
+                setMessage={setMessage}
               />
             </>
           ) : (
             <StoryDisplay
-              storyUnsaved={unsavedBook[0]}
-              imagesUnsaved={unsavedBook[1]}
+              storyUnsaved={storyUnsaved}
+              imagesUnsaved={imagesUnsaved}
               storySelected={selectedBook?.story}
               imagesSelected={selectedBook?.imageUrls}
               page={page}
@@ -434,7 +434,6 @@ export default function StoryPage() {
               handleSaveBook={handleSaveBook}
               processing={processing}
               myBooks={myBooks}
-              story={story}
               dismiss={dismiss}
               setDismiss={setDismiss}
               handleLikeBook={handleLikeBook}
@@ -442,7 +441,8 @@ export default function StoryPage() {
               userId={userId}
               setMessage={setMessage}
               extractTitleFromStory={extractTitleFromStory}
-              unsavedBook={unsavedBook}
+              loading={loading}
+              
             />
           )}
         </div>

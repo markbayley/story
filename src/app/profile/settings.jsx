@@ -35,7 +35,7 @@ const Settings = ({setMessage}) => {
         onClick={async () => {
           const success = await updateProfile({ displayName, photoURL });
           if (success) {
-            alert('Updated profile');
+            setMessage('Updated Profile');
           }
         }}
       >

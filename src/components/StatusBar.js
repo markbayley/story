@@ -6,6 +6,8 @@ import { useState } from "react";
 import Profile from "@/app/profile/page";
 import pic7 from "/public/pic7.jpg";
 import { AuthDisplay } from "./AuthDisplay";
+import { InformationCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+
 
 
 export const StatusBar = ({
@@ -20,7 +22,7 @@ export const StatusBar = ({
   const [userStatus, setUserStatus] = useState(false);
 
   return (
-    <div className="text-white px-4 py-2 flex justify-between text-xs fixed top-0 w-full z-20">
+    <div className="text-white px-4 py-2 flex justify-between text-xs fixed top-0 w-full z-20 md:bg-transparent bg-gray-900">
       <div onClick={resetStory} className="flex cursor-pointer">
         <Image
           src={pic7}
@@ -28,7 +30,8 @@ export const StatusBar = ({
           className="rounded-full h-10 w-10 xs:ml-2 ml-0"
         />
       </div>
-    { message != "" &&  <div className="border-2 animate-pulse px-4 flex items-center lg:mr-[8vw] text-[15px] font-light text-white bg-orange-400  rounded-br-lg rounded-full hover:bg-orange-400 shadow-lg  border-gray-200">{message}</div> }
+    { message != "" &&  <div onClick={() => setMessage("")} className="animate-pulse pr-7 flex relative items-center lg:ml-20 text-[16px] cursor-pointer  hover:text-gray-500 hover:border-gray-500 text-amber-500 rounded-full rounded-bl-lg  bg-gray-800 shadow-lg  ">
+<InformationCircleIcon className="h-6 w-6 mx-2"/> {message}<XMarkIcon  className="h-4 w-4 absolute top-1 right-1  "/></div> }
       {user ? (
         <div>
           <Profile

@@ -11,15 +11,11 @@ export const StoryForm = ({
   handleSubmit,
   setMessage,
   loading,
-  story,
   handleOpen,
 }) => {
   return (
     <div className="flex justify-start font-inter w-full sm:w-[60vw] lg:w-[36vw]">
-      <form
-        onSubmit={handleSubmit}
-        className="mt-2 rounded-xl"
-      >
+      <form onSubmit={handleSubmit} className="mt-2 rounded-xl">
         <div className=" text-orange-300 px-4 pb-4">
           <h1 className="font-bold font-antiqua text-5xl ">Storyteller AI</h1>
         </div>
@@ -59,7 +55,7 @@ export const StoryForm = ({
             onChange={(e) => {
               setPrompt(e.target.value), setMessage("");
             }}
-            className="p-2 w-full rounded-md border-gray-600 border text-[15px]"
+            className="w-full  p-2   rounded outline-none text-black placeholder-gray-500 bg-white text-[16px]"
           />
         </div>
         <h4 className="flex justify-between px-4 text-gray-300 text-xs pt-3">
@@ -67,30 +63,36 @@ export const StoryForm = ({
         </h4>
         <div className="flex text-[15px]">
           {loading ? (
-            <button className="px-4 py-2 m-4 text-stone-950 bg-orange-300 rounded-full hover:bg-orange-400 ">
-              Creating Story...
+            <button
+              type="submit"
+              className={
+                "w-full text-white px-4 py-2 m-4  rounded-md bg-indigo-600 hover:bg-indigo-500 flex justify-center  border-stone-700"
+              }
+            >
+              Creating...
+              <PaintBrushIcon className="h-6 w-6 mx-2" />
             </button>
           ) : (
             <button
               type="submit"
               className={
-                "w-full text-white px-4 py-2 m-4  rounded-md bg-indigo-600 hover:bg-indigo-500 flex justify-center border-b-2 border-stone-700"
+                "w-full text-white px-4 py-2 m-4 font-sans rounded-md bg-indigo-600 hover:bg-indigo-500 flex justify-center  border-stone-700"
               }
             >
               Create
               <PaintBrushIcon className="h-6 w-6 mx-2" />
             </button>
           )}
-       
-            <button
-              onClick={handleOpen}
-              className={
-                "w-full text-white px-4 py-2 m-4  rounded-md bg-indigo-600 hover:bg-indigo-500 flex justify-center border-b-2 border-stone-700"}
-            >
-              Viewer
-              <BookOpenIcon className="h-6 w-6 mx-2" />
-            </button>
-        
+
+          <button
+            onClick={handleOpen}
+            className={
+              "w-full text-white px-4 py-2 m-4 font-inter rounded-md bg-indigo-600 hover:bg-indigo-500 flex justify-center  border-stone-700"
+            }
+          >
+            View
+            <BookOpenIcon className="h-6 w-6 mx-2" />
+          </button>
         </div>
       </form>
       {/* <SignIn /> */}
