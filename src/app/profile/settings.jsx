@@ -81,18 +81,19 @@ const Settings = ({ setMessage }) => {
         value={displayName}
         onChange={(e) => setDisplayName(e.target.value)}
         className="w-full p-3 mb-4  rounded outline-none text-black placeholder-gray-500 bg-white text-[15px]"
+        onKeyDown={(e) => e.stopPropagation()}
       />
 
       <div
         className="w-full relative border-2 border-gray-300 border-dashed rounded-lg p-6"
         id="dropzone"
       >
-      <input
-  type="file"
-  accept="image/*"
-  onChange={handleFileChange}
-  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-/>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
         <div className="text-center ">
           {/* Image Preview */}
           {imagePreview ? (

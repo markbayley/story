@@ -380,7 +380,7 @@ export default function StoryPage() {
 
   return (
     <>
-      <div className="bg-[url('../../public/background5.png')] bg-cover min-h-screen overflow-hidden no-scroll ">
+      <div className="bg-[url('../../public/background5.png')] bg-cover bg-fixed min-h-screen overflow-hidden no-scroll ">
         <StatusBar
           message={message}
           resetStory={resetStory}
@@ -438,6 +438,8 @@ export default function StoryPage() {
               setMessage={setMessage}
               extractTitleFromStory={extractTitleFromStory}
               loading={loading}
+              handleDeleteBook={handleDeleteBook}
+              message={message}
             />
           )}
         </div>

@@ -20,11 +20,11 @@ export const StoryForm = ({
           <h1 className="font-bold font-antiqua text-5xl ">Storyteller AI</h1>
         </div>
         <h3 className=" px-4 text-gray-300 text-md font-light">
-          What do you want to read about?
-          <a onClick={() => setPrompt("A boy with a nervous pet dinosaur")}>
+        Create stories with AI. What do you want to read about? 
+          {/* <a onClick={() => setPrompt("A boy with a nervous pet dinosaur")}>
             {" "}
             A boy with a nervous pet dinosaur?{" "}
-          </a>
+          </a> */}
           <a onClick={() => setPrompt("A lonely princess and a frog prince")}>
             {" "}
             A lonely princess and a wise frog prince?{" "}
@@ -33,7 +33,7 @@ export const StoryForm = ({
             {" "}
             A castle in the clouds?{" "}
           </a>
-          Your imagination is limitless!
+       
         </h3>
         <div className="flex items-center justify-center ">
           <hr className="h-px my-4 bg-yellow-700 border-0 dark:bg-yellow-600 w-2/5" />{" "}
@@ -58,9 +58,9 @@ export const StoryForm = ({
             className="w-full  p-2   rounded outline-none text-black placeholder-gray-500 bg-white text-[16px]"
           />
         </div>
-        <h4 className="flex justify-between px-4 text-gray-300 text-xs pt-3">
+        {/* <h4 className="flex justify-between px-4 text-gray-300 text-xs pt-3">
           Buy credits to generate amazing storybook images!
-        </h4>
+        </h4> */}
         <div className="flex text-[15px]">
           {loading ? (
             <button

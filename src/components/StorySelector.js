@@ -43,7 +43,7 @@ export const StorySelector = ({
         <button
           onClick={(event) => {
             event.stopPropagation();
-            handleDeleteBook(book.id);
+            handleLikeBook(book.id);
           }}
           className={
             book?.likedBy?.includes(userId)
@@ -111,11 +111,13 @@ export const StorySelector = ({
     });
   };
 
+  
+
   return (
     <>
-      <div className="mt-5 lg:mt-12 text-2xl px-5">
+      <div className="pt-10 lg:mt-12 text-2xl px-5 ">
         {/* Stories Sorted By Likes */}
-        <div className="font-antiqua   w-64  rounded-t-lg flex justify-center gap-2">
+        <div className="font-antiqua   w-full  rounded-t-lg flex justify-end pr-8 gap-2">
           <button
             className={
               !myStoriesSelected
@@ -142,31 +144,28 @@ export const StorySelector = ({
           >
             My Stories
           </button>
-          {/* )} */}
-          {/* <button
-            className={
-              !myStoriesSelected
-                ? "text-orange-300"
-                : "text-white hover:text-orange-300"
-            }
-            onClick={() => setMyStoriesSelected(false)}
-          >
-            Favourites
-          </button> */}
+      
         </div>
-        <div className="flex justify-start text-orange-300 ">
+
+
+
+        <div className="flex justify-end text-amber-500">
           {/* Map User Stories */}
           {myStoriesSelected ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4  xl:grid-cols-6  gap-2 text-sm mb-3">
+            <div dir="rtl" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4  xl:grid-cols-auto  gap-2 text-sm mb-3   ">
               {myBooks.map((book) => (
                 <div
-                  onClick={() => handlePreviewMine(book.id)}
-                  key={book.id}
-                  className="rounded relative flex items-end justify-center cursor-pointer ease-in duration-100 fade-in"
+                onClick={() => handlePreviewMine(book.id)}
+                key={book.id}
+                className="rounded relative flex items-end justify-center cursor-pointer ease-in duration-100 fade-in border border-amber-500"
+               
+                 
                 >
                   <PreviewContent book={book} />
                 </div>
               ))}
+             
+
             </div>
           ) : (
             <div className=" w-full relative">

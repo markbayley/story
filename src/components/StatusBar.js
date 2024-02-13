@@ -30,7 +30,7 @@ export const StatusBar = ({
           className="rounded-full h-10 w-10 xs:ml-2 ml-0"
         />
       </div>
-    { message != "" &&  <div onClick={() => setMessage("")} className="animate-pulse pr-7 flex relative items-center lg:ml-20 text-[16px] cursor-pointer  hover:text-gray-500 hover:border-gray-500 text-pink-600 rounded-full rounded-bl-lg  bg-gray-800 shadow-lg  ">
+    { message != "" &&  <div onClick={() => setMessage("")} className="animate-pulse pr-7 flex relative items-center lg:ml-20 text-[16px] cursor-pointer  hover:text-gray-500 hover:border-gray-500 text-teal-500 rounded-full rounded-bl-lg  bg-gray-800 shadow-lg  ">
 <InformationCircleIcon className="h-6 w-6 mx-2"/> {message}<XMarkIcon  className="h-4 w-4 absolute top-1 right-1  "/></div> }
       {user ? (
         <div>

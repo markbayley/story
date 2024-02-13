@@ -23,7 +23,6 @@ const Profile = ({ user, setMessage }) => {
   const [settings, setSettings] = useState(false);
   const [contact, setContact] = useState(false);
 
-
   return (
     <>
       <Menu as="div" className="relative inline-block text-left z-20">
@@ -58,41 +57,41 @@ const Profile = ({ user, setMessage }) => {
           <Menu.Items className="absolute right-0 z-10 mt-2 w-80 md:w-96 origin-top-right rounded-lg bg-sky-950 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               <Menu.Item>
-               
-               
-                   <div className="flex justify-between w-full">
+                <div className="flex justify-between w-full">
                   <a
                     href="#"
-                    className={"flex items-center bg-sky-950 text-white  px-4 py-2 text-sm"} >
-                 
+                    className={
+                      "flex items-center bg-sky-950 text-white  px-4 py-2 text-sm"
+                    }
+                  >
                     <div>
                       {" "}
                       Signed in as
                       <span className="flex  font-semibold"> {user.email}</span>
                     </div>
                   </a>
-                
-                    <button
-                      type="submit"
-                      onClick={() => {
-                        signOut(auth);
-                        sessionStorage.removeItem("user");
-                      }}
-                  
-                       className= "flex items-center text-white px-4 py-2 m-4 rounded-md bg-indigo-600 hover:bg-indigo-500  justify-center border-b-2 border-stone-700"
-                  
-                    >
-                      <UserMinusIcon className="h-6 w-6 mr-2 " /> Sign Out
-                    </button>
-                   </div>
-              
-               
+
+                  <button
+                    type="submit"
+                    onClick={() => {
+                      signOut(auth);
+                      sessionStorage.removeItem("user");
+                    }}
+                    className="flex items-center text-white px-4 py-2 m-4 rounded-md bg-indigo-600 hover:bg-indigo-500  justify-center border-b-2 border-stone-700"
+                  >
+                    <UserMinusIcon className="h-6 w-6 mr-2 " /> Sign Out
+                  </button>
+                </div>
               </Menu.Item>
               <hr className="h-px my-1 bg-gray-700 border-0" />
               <Menu.Item>
                 {({ active }) => (
-                 <>
-                    <a  onClick={() => { setSettings(!settings); setContact(false) }}
+                  <>
+                    <a
+                      onClick={() => {
+                        setSettings(!settings);
+                        setContact(false);
+                      }}
                       href="#"
                       className={classNames(
                         active
@@ -101,17 +100,28 @@ const Profile = ({ user, setMessage }) => {
                         "block px-4 py-2 text-sm hover:text-gray-400"
                       )}
                     >
-                  <Cog6ToothIcon className="h-6 w-6 mr-2" /> Settings   <ChevronDownIcon className="-mr-1 h-5 w-5  " aria-hidden="true" />
+                      <Cog6ToothIcon className="h-6 w-6 mr-2" /> Settings{" "}
+                      <ChevronDownIcon
+                        className="-mr-1 h-5 w-5  "
+                        aria-hidden="true"
+                      />
                     </a>
-                  
-                <div> { settings ? <Settings setMessage={setMessage} /> : ""}</div></>
-                )}
 
+                    <div>
+                      {" "}
+                      {settings && <Settings setMessage={setMessage} /> }
+                    </div>
+                  </>
+                )}
               </Menu.Item>
               <Menu.Item>
-              {({ active }) => (
-                 <>
-                    <a  onClick={() => { setContact(!contact); setSettings(false) }}
+                {({ active }) => (
+                  <>
+                    <a
+                      onClick={() => {
+                        setContact(!contact);
+                        setSettings(false);
+                      }}
                       href="#"
                       className={classNames(
                         active
@@ -120,10 +130,18 @@ const Profile = ({ user, setMessage }) => {
                         "block px-4 py-2 text-sm hover:text-gray-400"
                       )}
                     >
-                  <EnvelopeIcon className="h-6 w-6 mr-2" /> Contact   <ChevronDownIcon className="-mr-1 h-5 w-5  " aria-hidden="true" />
+                      <EnvelopeIcon className="h-6 w-6 mr-2" /> Contact{" "}
+                      <ChevronDownIcon
+                        className="-mr-1 h-5 w-5  "
+                        aria-hidden="true"
+                      />
                     </a>
-                  
-                <div> { contact ? <Contact setMessage={setMessage} /> : ""}</div></>
+
+                    <div>
+                      {" "}
+                      {contact && <Contact setMessage={setMessage} /> }
+                    </div>
+                  </>
                 )}
               </Menu.Item>
               <Menu.Item>
