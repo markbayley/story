@@ -2,8 +2,8 @@
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import SignIn from "@/app/sign-in/page";
-import SignUp from "@/app/sign-up/page";
+import SignIn from "@/app/auth/sign-in";
+import SignUp from "@/app/auth/sign-up";
 import { UserIcon } from "@heroicons/react/24/outline";
 
 export const AuthDisplay = ({ userStatus, setUserStatus }) => {

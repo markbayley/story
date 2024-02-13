@@ -36,7 +36,8 @@ export const StoryDisplay = ({
   extractTitleFromStory,
   loading,
   handleDeleteBook,
-  message
+  message,
+  unsaved,
 }) => {
   // Helper function to get default image based on page
   const getDefaultImage = (page) => {
@@ -142,23 +143,35 @@ export const StoryDisplay = ({
     );
   };
 
-  console.log("selectedBook", selectedBook);
+ 
+  
 
-  // const [liked, setLiked ] = useState(false)
 
   return (
     <>
-      <div className="z-10 right-5 lg:right-10  absolute flex flex-col justify-start xl:justify-end items-center h-[87vh] gap-8 w-10 mt-4 xl:mt-0">
-       
-      <div className=" text-amber-500 border-2 rounded-lg border-amber-500 hover:cursor-pointer hover:bg-amber-500 hover:text-white">
+      <div className="z-10 right-5 lg:right-10 lg:pb-5 absolute flex flex-col justify-start xl:justify-end items-center h-[87vh] gap-8 w-10 mt-4 xl:mt-0">
+        {unsaved && selectedBook?.id == undefined && !dismiss && (
+          <div
+            onClick={handleSaveBook}
+            className="animate-pulse max-w-xs border-2 border-rose-500 text-sm text-rose-500 hover:bg-rose-500 hover:text-white rounded-lg shadow-lg relative cursor-pointer"
+            role="alert"
+          >
+            <ArrowUpTrayIcon className="h-9 w-9 p-1" />
+          </div>
+        )}
+
+        <div
+          onClick={() => setPage(5)}
+          className=" text-amber-500 border-2 rounded-lg border-amber-500 hover:cursor-pointer hover:bg-amber-500 hover:text-white"
+        >
           <UserCircleIcon className="h-9 w-9 p-1" />
         </div>
-       
+
         <div className=" text-indigo-500 border-2 rounded-lg border-indigo-500 hover:cursor-pointer hover:bg-indigo-500 hover:text-white">
           <ShareIcon className="h-9 w-9 p-1" />
         </div>
 
-        {userId != selectedBook?.userId && (
+        {selectedBook?.userId != undefined && userId != selectedBook?.userId && (
           <div
             onClick={() => handleLikeBook(selectedBook?.id, userId)}
             className=" text-teal-500 border-2 rounded-lg border-teal-500 hover:cursor-pointer  hover:bg-teal-500 hover:text-white"
@@ -319,55 +332,8 @@ export const StoryDisplay = ({
       {/* Fade in end */}
 
       {/* Error Start */}
-      {imagesUnsaved?.length > 0 && !dismiss && (
-        <div
-          className={
-            processing
-              ? "animate-pulse text-orange-400 px-2 hover:text-orange-400 fixed bottom-4 left-4 z-20"
-              : "text-white px-2 hover:text-gray-500 fixed bottom-4 left-4 z-20"
-          }
-        >
-          <div
-            onClick={handleSaveBook}
-            className="max-w-xs bg-red-500 text-sm text-white rounded-xl shadow-lg relative cursor-pointer"
-            role="alert"
-          >
-            <div className="flex p-4">
-              {processing
-                ? "Saving..."
-                : message == "Storybook Saved!"
-                ? () => setDismiss(true)
-                : myBooks.length < 12
-                ? "Save Story"
-                : "Maximum Books Saved"}{" "}
-              <ArrowUpTrayIcon className="h-6 mx-2" />
-              <div className="ms-auto">
-                <button
-                  onClick={() => setDismiss(true)}
-                  type="button"
-                  className="inline-flex flex-shrink-0 justify-center items-center h-5 w-5 rounded-lg text-white hover:text-white opacity-50 hover:opacity-100 focus:outline-none focus:opacity-100"
-                >
-                  <svg
-                    className="flex-shrink-0 w-4 h-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
+      {/* )} */}
       {/* ErrorEnd */}
     </>
   );

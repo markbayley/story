@@ -26,13 +26,13 @@ import { auth } from "@/app/firebase/config";
 
 export default function StoryPage() {
   const [userId, setUserId] = useState();
-  const [bookId, setBookId] = useState();
 
   const [prompt, setPrompt] = useState("");
   const [storyUnsaved, setStoryUnsaved] = useState("");
   const [imagesUnsaved, setImagesUnsaved] = useState([]);
   const [audio, setAudio] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: `Welcome`, type: "like" });
+
   const [page, setPage] = useState(0);
   const audioRef = useRef(null);
 
@@ -40,12 +40,14 @@ export default function StoryPage() {
   const [open, setOpen] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [dismiss, setDismiss] = useState(false);
+  const [unsaved, setUnsaved] = useState(false);
 
   const [myBooks, setMyBooks] = useState([]);
   const [allBooks, setAllBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   // const [unsavedBook, setUnsavedBook] = useState([]);
   const [myStoriesSelected, setMyStoriesSelected] = useState(false);
+  const [currentSliceIndex, setCurrentSliceIndex] = useState(0);
 
   useEffect(() => {
     fetchUserBooks();
@@ -64,45 +66,47 @@ export default function StoryPage() {
     event.preventDefault();
 
     if (!prompt) {
-      setMessage("No Prompt Entered!");
+      setMessage({text: "No Prompt Entered!", type: "info"});
       return;
     }
     if (prompt.length < 10) {
-      setMessage("Prompt Too Short!");
+      setMessage({text: "Prompt Too Short!", type: "info"});
       return;
     }
     resetStory();
     setPrompt(prompt);
     try {
-      setMessage("Writing Story...");
+      setMessage({text: "Writing Story...", type: "create"});
 
       setLoading(true);
       const storyData = await fetchStory(prompt);
-      setMessage("Story Created!");
+      setMessage({text: "Story Created!", type: "create"});
       setStoryUnsaved(storyData.story);
       //console.log("storyData", storyData, "story", story);
       const storyTitle = extractTitleFromStory(storyData.story);
       console.log("storyTitle", storyTitle);
       setOpen(true);
 
-      setMessage("Creating Images...");
+      setMessage({text: "Creating Images...", type: "create"});
       const imageData = await fetchImages(storyData.story);
       setImagesUnsaved(imageData.images);
       //console.log("imageData.images", imageData.images);
-      setMessage("Images Finished!");
+      setMessage({text: "Images Finished!", type: "create"});
 
       // Uncomment if you want to fetch audio
       // const audioUrl = await fetchAudio(storyData.story);
       // setAudio(audioUrl);
       //setUnsavedBook([storyData.story, imageData.images, storyTitle]);
       //console.log("UnsavedBook", unsavedBook);
+      setMessage({text: "Save Your Story", type: "save"});
+      setLoading(false);
+      setUnsaved(true);
     } catch (error) {
       console.error("Error:", error);
-      setMessage("No Credits");
+      setMessage({text: "No Credits!", type: "error"});
       setLoading(false);
     }
-    setMessage("Storybook Created!");
-    setLoading(false);
+   
   };
 
   const extractTitleFromStory = (storyText) => {
@@ -147,6 +151,7 @@ export default function StoryPage() {
         storage,
         `images/${userId}/${bookId}/${uniqueImageId}`
       );
+      setMessage({text: "Saving Images...", type: "save"});
       await uploadBytes(imageRef, image); // Ensure the image is awaited
       const url = await getDownloadURL(imageRef);
       imageUrls.push(url);
@@ -157,11 +162,12 @@ export default function StoryPage() {
 
   const handleSaveBook = async () => {
     if (myBooks.length >= 12) {
-      setMessage("Maximum Books Saved!");
+      setMessage({text: "Maximum Books Saved!", type: "save"});
       return;
     }
     setProcessing(true);
-    setMessage("Saving Storybook...");
+    setDismiss(true)
+    setMessage({text: "Saving Storybook...", type: "save"});
     try {
       const validImages = imagesUnsaved.filter((image) => image != null); // Filter out undefined or null images
       const convertedImages = validImages.map((base64Image) =>
@@ -175,11 +181,12 @@ export default function StoryPage() {
       // After saving the book, refetch the books list
       fetchUserBooks();
     } catch (error) {
-      setMessage("Error Saving Book:", error);
+      setMessage({text: "Error Saving Book!", type: "save"});
       setProcessing(false);
     }
     setProcessing(false);
-    setMessage("Storybook Saved!");
+    setMessage({text: "Storybook Saved!", type: "create"});
+    setUnsaved(false);
   };
 
   const saveBookToFirestore = async (userId, storyUnsaved, imageUrls) => {
@@ -226,6 +233,7 @@ export default function StoryPage() {
     if (userId) {
       const fetchedBooks = await getBooksForUser(userId);
       setMyBooks(fetchedBooks);
+      //setMessage({text: "My Books Fetched!", type: "success"});
     }
   };
 
@@ -243,6 +251,7 @@ export default function StoryPage() {
   const fetchAllBooks = async () => {
     const fetchedBooks = await getAllBooks(userId);
     setAllBooks(fetchedBooks);
+    //setMessage({text: "All Books Fetched", type: "success"});
   };
 
   const getAllBooks = async () => {
@@ -260,7 +269,7 @@ export default function StoryPage() {
   //|| myBooks[0]?.userId
   const handleLikeBook = async (bookId, userId) => {
     if (userId === selectedBook?.userId) {
-      setMessage("Can't Like Own Book!");
+      setMessage({text: "Can't Like Own Book!", type: "like"});
       return;
     }
 
@@ -270,9 +279,10 @@ export default function StoryPage() {
 
       // UI logic as previously described
     } catch (error) {
-      setMessage("Can't Like Book Twice!");
+      setMessage( setMessage({text: "Can't Like Book Twice!", type: "like"}));
       console.error("Error liking book: ", error);
     }
+    fetchAllBooks();
   };
 
   const fetchBookById = async (bookId, userId) => {
@@ -289,15 +299,16 @@ export default function StoryPage() {
         setSelectedBook({
           ...selectedBook,
           likes: (selectedBook.likes || 0) + 1,
+          likedBy: [...(selectedBook.likedBy || []), userId], // Also optimistically update the likedBy array
         });
         await updateDoc(bookRef, {
           likedBy: arrayUnion(userId),
           likes: increment(1),
         });
-        setMessage("Book Liked!");
-        fetchAllBooks();
+        setMessage({text: "Book Liked!", type: "like"});
+       
       } else {
-        setMessage("Already Liked!");
+        setMessage({text: "Already Liked!", type: "like"});
         // Optionally handle this case in the UI, e.g., by showing a message
       }
     } else {
@@ -308,7 +319,7 @@ export default function StoryPage() {
   //////////////// REMOVE BOOK ///////////////
 
   const handleDeleteBook = async (bookId) => {
-    setMessage("Deleting Book...");
+    setMessage({text: "Deleting Book...", type: "delete"});
     try {
       await deleteBookFromFirestore(bookId);
 
@@ -316,10 +327,10 @@ export default function StoryPage() {
       const updatedBooks = myBooks.filter((book) => book.id !== bookId);
       setMyBooks(updatedBooks);
     } catch (error) {
-      setMessage("Failed To Delete Book");
+      setMessage({text: "Failed To Delete Book", type: "delete"});
       // Optionally handle the error, e.g., show an error message to the user
     }
-    setMessage("Book Deleted!");
+    setMessage({text: "Book Deleted", type: "delete"});
   };
 
   const deleteBookFromFirestore = async (bookId) => {
@@ -376,7 +387,7 @@ export default function StoryPage() {
     setDismiss(false);
   };
 
-  console.log("userId:", userId, "selectedBook.userId:", selectedBook?.userId);
+ console.log("userId:", userId, "selectedBook?.likedBy:", selectedBook?.likedBy);
 
   return (
     <>
@@ -400,6 +411,7 @@ export default function StoryPage() {
                 handleSubmit={handleSubmit}
                 handleOpen={handleOpen}
                 setMessage={setMessage}
+                storyUnsaved={storyUnsaved}
               />
 
               <StorySelector
@@ -414,6 +426,9 @@ export default function StoryPage() {
                 userId={userId}
                 handleDeleteBook={handleDeleteBook}
                 setMessage={setMessage}
+                currentSliceIndex={currentSliceIndex}
+                setCurrentSliceIndex={setCurrentSliceIndex}
+                selectedBook={selectedBook}
               />
             </>
           ) : (
@@ -440,6 +455,7 @@ export default function StoryPage() {
               loading={loading}
               handleDeleteBook={handleDeleteBook}
               message={message}
+              unsaved={unsaved}
             />
           )}
         </div>

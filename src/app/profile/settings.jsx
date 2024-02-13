@@ -33,7 +33,7 @@ const Settings = ({ setMessage }) => {
       return photoURL; // Returns the URL of the uploaded image
     } catch (error) {
       console.error("Error uploading image: ", error);
-      setMessage("Error uploading image");
+      setMessage({text: "Error Uploading Image!", type: "error"});
     }
   };
 
@@ -42,11 +42,11 @@ const Settings = ({ setMessage }) => {
       const uploadedPhotoURL = await uploadImage();
       if (uploadedPhotoURL) {
         await updateProfile({ displayName, photoURL: uploadedPhotoURL });
-        setMessage("Updated Profile");
+        setMessage({text: "Updated Profile Image!", type: "info"});
       }
     } else {
       await updateProfile({ displayName });
-      setMessage("Updated Profile");
+      setMessage({text: "Profile Updated!", type: "info"});
     }
   };
 
@@ -66,10 +66,10 @@ const Settings = ({ setMessage }) => {
   const [updateProfile, updating, error] = useUpdateProfile(auth);
 
   if (error) {
-    setMessage("Error Updating Profile");
+    setMessage({text: "Error Updating!", type: "error"});
   }
   if (updating) {
-    setMessage("Updating Profile");
+    setMessage({text: "Updating Profile!", type: "info"});
   }
 
   return (

@@ -20,8 +20,13 @@ export const StorySelector = ({
   userId,
   handleDeleteBook,
   setMessage,
+  currentSliceIndex,
+  setCurrentSliceIndex,
+  selectedBook,
 }) => {
   const PreviewContent = ({ book }) => {
+    // console.log("selectedBook", selectedBook?.id, "book.id", book?.id);
+
     return (
       <>
         {/* User Icon */}
@@ -33,22 +38,30 @@ export const StorySelector = ({
           }
         >
           {/* {userId == book.userId && */}
-          <div className="flex items-center pr-1">
-           { book?.creatorPhotoURL ? <img src={book?.creatorPhotoURL} alt="profile-mini" className="h-10 w-10 lg:h-5 lg:w-5 object-cover border-2 m-[2px] rounded-full"  /> : <UserCircleIcon className="h-10 w-10 lg:h-6 lg:w-6" /> }
-           <span className=""> {book?.creatorName || book?.displayName}{" "}</span>
+          <div className="flex items-center  pr-1">
+            <span className=""> {book?.creatorName || book?.displayName} </span>
+            {book?.creatorPhotoURL ? (
+              <img
+                src={book?.creatorPhotoURL}
+                alt="profile-mini"
+                className="h-10 w-10 lg:h-5 lg:w-5 object-cover border-2 m-[2px] rounded-full"
+              />
+            ) : (
+              <UserCircleIcon className="h-10 w-10 lg:h-6 lg:w-6" />
+            )}
           </div>
           {/* } */}
         </div>
         {/* Likes Icon */}
         <button
-          onClick={(event) => {
-            event.stopPropagation();
-            handleLikeBook(book.id);
-          }}
+          // onClick={(event) => {
+          //   event.stopPropagation();
+          //   handleLikeBook(book.id);
+          // }}
           className={
             book?.likedBy?.includes(userId)
               ? "z-10 right-1 top-1 absolute bg-teal-500 rounded-tl-full rounded-full rounded-br   text-white  border-2 border-teal-500 "
-              : "z-10 right-1 top-1 absolute hover:bg-teal-500 rounded-tl-full rounded-full rounded-br   hover:text-white text-teal-500 border-2 border-teal-500 bg-slate-700"
+              : "z-10 right-1 top-1 absolute  rounded-tl-full rounded-full rounded-br    text-teal-500 border-2 border-teal-500 bg-slate-700"
           }
         >
           <div className="relative h-10 w-10 lg:h-5 lg:w-5 rounded-full text-lg md:text-md lg:text-xs flex justify-center items-center text-center p-3 shadow-xl">
@@ -57,7 +70,7 @@ export const StorySelector = ({
           </div>
         </button>
         {/* Delete Icon */}
-        <div
+        {/* <div
           onClick={(event) => {
             event.stopPropagation();
             handleDeleteBook(book.id);
@@ -67,11 +80,15 @@ export const StorySelector = ({
           {userId == book.userId && (
             <TrashIcon className="h-10 w-10 lg:h-6 lg:w-6 p-1" />
           )}
-        </div>
+        </div> */}
         {/* Image */}
-        <div className="bg-cover relative w-[100vw] aspect-square border-2  border-[#15161b] hover:border-2 transition ease-in-out hover:border-amber-500 duration-200 rounded-tr-xl flex items-end">
+        <div
+          className={
+            "bg-cover relative w-[100vw] aspect-square rounded-tr-xl flex items-end"
+          }
+        >
           {/* Title */}
-          <h5 className="p-1 pr-2 absolute text-white tracking-wide font-light  z-10 bg-gradient-to-r from-sky-950 from-0% to-[#3c3232] to-100%  rounded-tr-full rounded-br-full px-1 border-b-2 border-gray-900 opacity-90 drop-shadow-2xl">
+          <h5 className="p-1 px-2 absolute text-white tracking-wide font-light w-auto text-center z-10 bg-gradient-to-r from-sky-950 from-0% to-[#3c3232] to-100%  rounded  font-antiqua border-b-2 border-gray-900 opacity-90 drop-shadow-2xl">
             {extractTitleFromStory(book.story) || "Untitled"}
           </h5>
 
@@ -83,14 +100,12 @@ export const StorySelector = ({
             alt="preview"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             cover="true"
-            className={"rounded-tr-xl z-5"}
+            className={selectedBook?.id != book?.id ? "rounded-tr-xl z-5" : " animate-pulse rounded-tr-xl z-5" }
           />
         </div>
       </>
     );
   };
-
-  const [currentSliceIndex, setCurrentSliceIndex] = useState(0);
 
   const booksPerPage = 6;
 
@@ -111,18 +126,16 @@ export const StorySelector = ({
     });
   };
 
-  
-
   return (
     <>
-      <div className="pt-10 lg:mt-12 text-2xl px-5 ">
+      <div className="pt-10 lg:mt-16 text-2xl px-5 ">
         {/* Stories Sorted By Likes */}
-        <div className="font-antiqua   w-full  rounded-t-lg flex justify-end pr-8 gap-2">
+        <div className="font-sans text-sm  w-full  rounded-t-lg flex justify-end pr-8 gap-2">
           <button
             className={
               !myStoriesSelected
-                ? "text-teal-500 bg-slate-800  rounded-t-lg px-3 pb-1  border-x-2 border-t-2 border-teal-500"
-                : "text-gray-500 hover:text-teal-500 bg-slate-800  rounded-t-lg px-3 pb-1 border-x border-t border-gray-500"
+                ? "text-teal-500 bg-slate-800  rounded-t-lg px-3 py-2  border-x-2 border-t-2 border-teal-500"
+                : "text-gray-500 hover:text-teal-500 bg-slate-800  rounded-t-lg px-3 py-2 border-x border-t border-gray-500"
             }
             onClick={() => setMyStoriesSelected(false)}
           >
@@ -133,8 +146,8 @@ export const StorySelector = ({
           <button
             className={
               myStoriesSelected
-                ? "text-amber-500 bg-slate-800  rounded-t-lg px-3  py-1 border-x-2 border-t-2 border-amber-500"
-                : "text-gray-500  hover:text-amber-500 bg-slate-800  rounded-t-lg px-3  py-1 border-x border-t border-gray-500"
+                ? "text-amber-500 bg-slate-800  rounded-t-lg px-3  py-2 border-x-2 border-t-2 border-amber-500"
+                : "text-gray-500  hover:text-amber-500 bg-slate-800  rounded-t-lg px-3  py-2 border-x border-t border-gray-500"
             }
             onClick={
               myBooks.length > 0
@@ -144,28 +157,28 @@ export const StorySelector = ({
           >
             My Stories
           </button>
-      
         </div>
-
-
 
         <div className="flex justify-end text-amber-500">
           {/* Map User Stories */}
           {myStoriesSelected ? (
-            <div dir="rtl" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4  xl:grid-cols-auto  gap-2 text-sm mb-3   ">
+            <div
+              dir="rtl"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4  xl:grid-cols-6  gap-2 text-sm mb-3   "
+            >
               {myBooks.map((book) => (
                 <div
-                onClick={() => handlePreviewMine(book.id)}
-                key={book.id}
-                className="rounded relative flex items-end justify-center cursor-pointer ease-in duration-100 fade-in border border-amber-500"
-               
-                 
+                  onClick={() => handlePreviewMine(book.id)}
+                  key={book.id}
+                  className={
+                    selectedBook?.id != book?.id
+                      ? "relative flex items-end justify-center cursor-pointer fade-in border-2 border-[#15161b] hover:border-2 transition ease-in-out hover:border-amber-500 duration-200 rounded-tr-xl  "
+                      : "relative flex items-end justify-center cursor-pointer fade-in border-2 border-amber-500 hover:border-2 transition ease-in-out hover:border-amber-500 duration-200 rounded-tr-xl "
+                  }
                 >
                   <PreviewContent book={book} />
                 </div>
               ))}
-             
-
             </div>
           ) : (
             <div className=" w-full relative">
@@ -176,6 +189,7 @@ export const StorySelector = ({
                 >
                   <ChevronLeftIcon className="h-10 w-10" />
                 </button>
+
                 {allBooks
                   .slice()
                   .sort((a, b) => (b.likes || 0) - (a.likes || 0))
@@ -184,11 +198,16 @@ export const StorySelector = ({
                     <div
                       onClick={() => handlePreviewAll(book.id)}
                       key={book.id}
-                      className="rounded relative flex items-end justify-center cursor-pointer  ease-in duration-100 fade-in"
+                      className={
+                        selectedBook?.id != book?.id
+                          ? " relative flex items-end justify-center cursor-pointer fade-in border-2 border-[#15161b] hover:border-2 transition ease-in-out hover:border-teal-500 duration-200 rounded-tr-xl  "
+                          : " relative flex items-end justify-center cursor-pointer fade-in border-2 border-teal-500 hover:border-2 transition ease-in-out hover:border-teal-500 duration-200 rounded-tr-xl "
+                      }
                     >
                       <PreviewContent book={book} />
                     </div>
                   ))}
+
                 <button
                   onClick={handleSlider("right")}
                   className=" h-full w-12 absolute -right-20 hover:text-gray-500"

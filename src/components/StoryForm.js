@@ -1,4 +1,4 @@
-import SignIn from "@/app/sign-in/page";
+import SignIn from "@/app/auth/sign-in";
 import {
   BookOpenIcon,
   PaintBrushIcon,
@@ -12,6 +12,7 @@ export const StoryForm = ({
   setMessage,
   loading,
   handleOpen,
+  storyUnsaved
 }) => {
   return (
     <div className="flex justify-start font-inter w-full sm:w-[60vw] lg:w-[36vw]">
@@ -83,7 +84,7 @@ export const StoryForm = ({
               <PaintBrushIcon className="h-6 w-6 mx-2" />
             </button>
           )}
-
+{ storyUnsaved &&
           <button
             onClick={handleOpen}
             className={
@@ -93,6 +94,7 @@ export const StoryForm = ({
             View
             <BookOpenIcon className="h-6 w-6 mx-2" />
           </button>
+}
         </div>
       </form>
       {/* <SignIn /> */}
