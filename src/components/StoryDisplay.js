@@ -149,7 +149,7 @@ export const StoryDisplay = ({
 
   return (
     <>
-      <div className="z-10 right-5 lg:right-10 lg:pb-5 absolute flex flex-col justify-start xl:justify-end items-center h-[87vh] gap-8 w-10 mt-4 xl:mt-0">
+      <div className="z-10 right-5 lg:right-10 lg:pb-5 absolute flex flex-col justify-start xl:justify-end items-center h-[60vh] gap-8 w-10 mt-4 xl:mt-0 ">
         {unsaved && selectedBook?.id == undefined && !dismiss && (
           <div
             onClick={handleSaveBook}
@@ -162,19 +162,19 @@ export const StoryDisplay = ({
 
         <div
           onClick={() => setPage(5)}
-          className=" text-amber-500 border-2 rounded-lg border-amber-500 hover:cursor-pointer hover:bg-amber-500 hover:text-white"
+          className=" md:text-amber-500 border-2 rounded-lg md:border-amber-500 hover:cursor-pointer md:hover:bg-amber-500 bg-amber-500 md:hover:text-white md:bg-transparent"
         >
           <UserCircleIcon className="h-9 w-9 p-1" />
         </div>
 
-        <div className=" text-indigo-500 border-2 rounded-lg border-indigo-500 hover:cursor-pointer hover:bg-indigo-500 hover:text-white">
+        <div className=" md:text-indigo-500 border-2 rounded-lg md:border-indigo-500 hover:cursor-pointer md:hover:bg-indigo-500 bg-indigo-500 md:hover:text-white md:bg-transparent">
           <ShareIcon className="h-9 w-9 p-1" />
         </div>
 
         {selectedBook?.userId != undefined && userId != selectedBook?.userId && (
           <div
             onClick={() => handleLikeBook(selectedBook?.id, userId)}
-            className=" text-teal-500 border-2 rounded-lg border-teal-500 hover:cursor-pointer  hover:bg-teal-500 hover:text-white"
+            className=" md:text-teal-500 border-2 rounded-lg md:border-teal-500 hover:cursor-pointer  md:hover:bg-teal-500 bg-teal-500 md:hover:text-white md:bg-transparent"
           >
             <HandThumbUpIcon className="h-9 w-9  p-1" />
           </div>
@@ -183,7 +183,7 @@ export const StoryDisplay = ({
         {userId == selectedBook?.userId && (
           <div
             onClick={() => handleDeleteBook(selectedBook?.id)}
-            className=" text-pink-600 border-2 rounded-lg border-pink-600 hover:cursor-pointer  hover:bg-pink-500 hover:text-white"
+            className=" md:text-pink-600 border-2 rounded-lg md:border-pink-600 hover:cursor-pointer  md:hover:bg-pink-500 bg-pink-500 md:hover:text-white md:bg-transparent"
           >
             <TrashIcon className="h-9 w-9  p-1" />
           </div>
@@ -193,21 +193,21 @@ export const StoryDisplay = ({
       <div className="fade-in">
         <div
           className=" border-r sm:border-l-1 sm:rounded-xl bg-orange-200 
-              lg:bg-gradient-to-r from-orange-200 from-20% via-stone-700 via-50% to-orange-200 to-60% ..."
+              xl:bg-gradient-to-r from-orange-200 from-20% via-stone-700 via-50% to-orange-200 to-60% ..."
         >
           {/* Image Section */}
 
           <div
             className="sm:border-r-2 sm:border-l-1 sm:rounded-xl sm:border-stone-800 mx-auto
-               lg:flex
+               xl:flex
                 border xl:h-[87vh]"
           >
             <div
               className="w-full h-full
-                 lg:w-1/2
+                 xl:w-1/2
                  flex-1 "
             >
-              <div className="m-4 sm:rounded-tl-xl sm:rounded-bl-xl">
+              <div className="m-4 xl:m-12 sm:rounded-tl-xl sm:rounded-bl-xl">
                 <ImageDisplay
                   imagesSelected={imagesSelected}
                   page={page}
@@ -220,12 +220,12 @@ export const StoryDisplay = ({
 
             <div
               className="flex flex-col w-full 
-               lg:w-1/2 
-               p-4 xl:pr-6 lg:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25% to-orange-200 to-90% ... 
-                sm:rounded lg:rounded-xl lg:border lg:rounded-tr-lg lg:rounded-br-lg lg:border-l-4 lg:border-stone-700 ... overflow-y-hidden text-stone-900 font-antiqua"
+               xl:w-1/2 
+               p-4  xl:p-10 xl:bg-gradient-to-r from-stone-700 from-0% via-orange-200 via-25% to-orange-200 to-90% ... 
+                sm:rounded xl:rounded-xl xl:border xl:rounded-tr-lg xl:rounded-br-lg xl:border-l-4 xl:border-stone-700 ... overflow-y-hidden text-stone-900 font-antiqua"
             >
               <div className="flex justify-between text-stone-900">
-                <h1 className="text-4xl xl:text-5xl font-bold capitalize font-antiqua">
+                <h1 className="text-3xl xl:text-4xl 2xl:text-5xl font-bold capitalize font-antiqua">
                   {storySelected
                     ? extractTitleFromStory(storySelected)
                     : storyUnsaved
@@ -246,7 +246,7 @@ export const StoryDisplay = ({
                 </button>
               </div>
 
-              <div className="h-full text-stone-900 xs:pr-4 lg:pr-0 text-3xl  py-4  w-full  no-scrollbar overflow-y-auto">
+              <div className="h-full text-stone-900 pr-4 lg:pr-0 text-2xl xl:text-xl 2xl:text-3xl py-4  w-full  no-scrollbar overflow-y-auto">
                 {!storySelected && !storyUnsaved && !loading ? (
                   <div className="flex justify-center items-center h-full italic text-center">
                     Please click on a story or create a new story to start
@@ -260,7 +260,7 @@ export const StoryDisplay = ({
               {/* Controls Section */}
               <div className="flex-1 flex pt-3 ">
                 <div className="w-full flex items-end ">
-                  <div className="w-1/3 md:w-1/2  ">
+                  <div className="w-1/3 md:w-1/2   ">
                     {
                       <div className="mr-2  shadow-lg rounded-full border-2 border-stone-700 opacity-80">
                         <audio

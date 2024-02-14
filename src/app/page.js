@@ -23,6 +23,7 @@ import {
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
+import { FooterNav } from "@/components/FooterNav";
 
 export default function StoryPage() {
   const [userId, setUserId] = useState();
@@ -66,47 +67,46 @@ export default function StoryPage() {
     event.preventDefault();
 
     if (!prompt) {
-      setMessage({text: "No Prompt Entered!", type: "info"});
+      setMessage({ text: "No Prompt Entered!", type: "info" });
       return;
     }
     if (prompt.length < 10) {
-      setMessage({text: "Prompt Too Short!", type: "info"});
+      setMessage({ text: "Prompt Too Short!", type: "info" });
       return;
     }
     resetStory();
     setPrompt(prompt);
     try {
-      setMessage({text: "Writing Story...", type: "create"});
+      setMessage({ text: "Writing Story...", type: "create" });
 
       setLoading(true);
       const storyData = await fetchStory(prompt);
-      setMessage({text: "Story Created!", type: "create"});
+      setMessage({ text: "Story Created!", type: "create" });
       setStoryUnsaved(storyData.story);
       //console.log("storyData", storyData, "story", story);
       const storyTitle = extractTitleFromStory(storyData.story);
       console.log("storyTitle", storyTitle);
       setOpen(true);
 
-      setMessage({text: "Creating Images...", type: "create"});
+      setMessage({ text: "Creating Images...", type: "create" });
       const imageData = await fetchImages(storyData.story);
       setImagesUnsaved(imageData.images);
       //console.log("imageData.images", imageData.images);
-      setMessage({text: "Images Finished!", type: "create"});
+      setMessage({ text: "Images Finished!", type: "create" });
 
       // Uncomment if you want to fetch audio
       // const audioUrl = await fetchAudio(storyData.story);
       // setAudio(audioUrl);
       //setUnsavedBook([storyData.story, imageData.images, storyTitle]);
       //console.log("UnsavedBook", unsavedBook);
-      setMessage({text: "Save Your Story", type: "save"});
+      setMessage({ text: "Save Your Story", type: "save" });
       setLoading(false);
       setUnsaved(true);
     } catch (error) {
       console.error("Error:", error);
-      setMessage({text: "No Credits!", type: "error"});
+      setMessage({ text: "No Credits!", type: "error" });
       setLoading(false);
     }
-   
   };
 
   const extractTitleFromStory = (storyText) => {
@@ -151,7 +151,7 @@ export default function StoryPage() {
         storage,
         `images/${userId}/${bookId}/${uniqueImageId}`
       );
-      setMessage({text: "Saving Images...", type: "save"});
+      setMessage({ text: "Saving Images...", type: "save" });
       await uploadBytes(imageRef, image); // Ensure the image is awaited
       const url = await getDownloadURL(imageRef);
       imageUrls.push(url);
@@ -162,12 +162,12 @@ export default function StoryPage() {
 
   const handleSaveBook = async () => {
     if (myBooks.length >= 12) {
-      setMessage({text: "Maximum Books Saved!", type: "save"});
+      setMessage({ text: "Maximum Books Saved!", type: "save" });
       return;
     }
     setProcessing(true);
-    setDismiss(true)
-    setMessage({text: "Saving Storybook...", type: "save"});
+    setDismiss(true);
+    setMessage({ text: "Saving Storybook...", type: "save" });
     try {
       const validImages = imagesUnsaved.filter((image) => image != null); // Filter out undefined or null images
       const convertedImages = validImages.map((base64Image) =>
@@ -181,11 +181,11 @@ export default function StoryPage() {
       // After saving the book, refetch the books list
       fetchUserBooks();
     } catch (error) {
-      setMessage({text: "Error Saving Book!", type: "save"});
+      setMessage({ text: "Error Saving Book!", type: "save" });
       setProcessing(false);
     }
     setProcessing(false);
-    setMessage({text: "Storybook Saved!", type: "create"});
+    setMessage({ text: "Storybook Saved!", type: "create" });
     setUnsaved(false);
   };
 
@@ -269,7 +269,7 @@ export default function StoryPage() {
   //|| myBooks[0]?.userId
   const handleLikeBook = async (bookId, userId) => {
     if (userId === selectedBook?.userId) {
-      setMessage({text: "Can't Like Own Book!", type: "like"});
+      setMessage({ text: "Can't Like Own Book!", type: "like" });
       return;
     }
 
@@ -279,7 +279,7 @@ export default function StoryPage() {
 
       // UI logic as previously described
     } catch (error) {
-      setMessage( setMessage({text: "Can't Like Book Twice!", type: "like"}));
+      setMessage(setMessage({ text: "Can't Like Book Twice!", type: "like" }));
       console.error("Error liking book: ", error);
     }
     fetchAllBooks();
@@ -305,10 +305,9 @@ export default function StoryPage() {
           likedBy: arrayUnion(userId),
           likes: increment(1),
         });
-        setMessage({text: "Book Liked!", type: "like"});
-       
+        setMessage({ text: "Book Liked!", type: "like" });
       } else {
-        setMessage({text: "Already Liked!", type: "like"});
+        setMessage({ text: "Already Liked!", type: "like" });
         // Optionally handle this case in the UI, e.g., by showing a message
       }
     } else {
@@ -319,7 +318,7 @@ export default function StoryPage() {
   //////////////// REMOVE BOOK ///////////////
 
   const handleDeleteBook = async (bookId) => {
-    setMessage({text: "Deleting Book...", type: "delete"});
+    setMessage({ text: "Deleting Book...", type: "delete" });
     try {
       await deleteBookFromFirestore(bookId);
 
@@ -327,10 +326,10 @@ export default function StoryPage() {
       const updatedBooks = myBooks.filter((book) => book.id !== bookId);
       setMyBooks(updatedBooks);
     } catch (error) {
-      setMessage({text: "Failed To Delete Book", type: "delete"});
+      setMessage({ text: "Failed To Delete Book", type: "delete" });
       // Optionally handle the error, e.g., show an error message to the user
     }
-    setMessage({text: "Book Deleted", type: "delete"});
+    setMessage({ text: "Book Deleted", type: "delete" });
   };
 
   const deleteBookFromFirestore = async (bookId) => {
@@ -387,7 +386,12 @@ export default function StoryPage() {
     setDismiss(false);
   };
 
- console.log("userId:", userId, "selectedBook?.likedBy:", selectedBook?.likedBy);
+  console.log(
+    "userId:",
+    userId,
+    "selectedBook?.likedBy:",
+    selectedBook?.likedBy
+  );
 
   return (
     <>
@@ -401,7 +405,7 @@ export default function StoryPage() {
           setMessage={setMessage}
         />
 
-        <div className="mx-0 lg:mx-[10%] no-scroll pt-16">
+        <div className="mx-0 md:mx-[10%] no-scroll pt-16">
           {!open ? (
             <>
               <StoryForm
@@ -430,6 +434,15 @@ export default function StoryPage() {
                 setCurrentSliceIndex={setCurrentSliceIndex}
                 selectedBook={selectedBook}
               />
+                  <FooterNav
+                message={message}
+                resetStory={resetStory}
+                setMyBooks={setMyBooks}
+                setUserId={setUserId}
+                setMyStoriesSelected={setMyStoriesSelected}
+                setMessage={setMessage}
+              />
+           
             </>
           ) : (
             <StoryDisplay
@@ -459,6 +472,7 @@ export default function StoryPage() {
             />
           )}
         </div>
+    
       </div>
     </>
   );

@@ -42,15 +42,15 @@ export const StatusBar = ({
   
 
   return (
-    <div className="text-white px-4 py-2 flex justify-between text-xs fixed top-0 w-full z-20 md:bg-transparent bg-gray-900">
+    <div className="text-white px-2 py-2 flex justify-between text-xs fixed top-0 w-full z-20 md:bg-transparent bg-gray-900">
       <div onClick={resetStory} className="flex cursor-pointer">
         <Image
           src={pic7}
           alt="logo"
-          className="rounded-full h-10 w-10 xs:ml-2 ml-0"
+          className="rounded-full h-12 w-12 "
         />
       </div>
-    { message != "" &&  <div onClick={() => setMessage({ text: "", type: "" })} className={` pr-7 flex relative items-center lg:ml-20 text-[16px] cursor-pointer  hover:text-gray-500 hover:border-gray-500 ${messageColor(message.type)} rounded-full rounded-bl-lg  bg-gray-800 shadow-lg `}>
+    { message != "" &&  <div onClick={() => setMessage({ text: "", type: "" })} className={` pr-7 flex relative items-center lg:ml-40 text-sm md:text-[16px] cursor-pointer  hover:text-gray-500 hover:border-gray-500 ${messageColor(message.type)} rounded-full rounded-bl-lg  bg-gray-800 shadow-lg `}>
 <InformationCircleIcon className="h-6 w-6 mx-2"/> {message.text}<XMarkIcon  className="h-4 w-4 absolute top-1 right-2  "/></div> }
       {user ? (
         <div>

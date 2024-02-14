@@ -33,18 +33,18 @@ export const StorySelector = ({
         <div
           className={
             userId != book.userId
-              ? "z-10 left-1 top-1 absolute rounded-tl-lg text-white border-2 border-amber-500 rounded-full bg-slate-700"
-              : "z-10 left-1 top-1 absolute bg-amber-500 rounded-tl-lg text-white border-2 border-amber-500 rounded-full"
+              ? "z-10 left-1 top-1 absolute rounded-tl-lg text-white  rounded-full bg-slate-700"
+              : "z-10 left-1 top-1 absolute bg-amber-500 rounded-tl-lg text-white rounded-full"
           }
         >
           {/* {userId == book.userId && */}
           <div className="flex items-center  pr-1">
-            <span className=""> {book?.creatorName || book?.displayName} </span>
+            <span className="px-1"> {book?.creatorName || book?.displayName} </span>
             {book?.creatorPhotoURL ? (
               <img
                 src={book?.creatorPhotoURL}
                 alt="profile-mini"
-                className="h-10 w-10 lg:h-5 lg:w-5 object-cover border-2 m-[2px] rounded-full"
+                className="h-10 w-10 lg:h-5 lg:w-5 object-cover  p-1 lg:p-0 m-[1px] lg:m-[2px] rounded-full"
               />
             ) : (
               <UserCircleIcon className="h-10 w-10 lg:h-6 lg:w-6" />
@@ -93,10 +93,11 @@ export const StorySelector = ({
           </h5>
 
           <Image
-            src={pic7}
-            // book.imageUrls && book.imageUrls.length > 0
-            //   ? book.imageUrls[0]
-            //   :
+            src={
+            book.imageUrls && book.imageUrls.length > 0
+              ? book.imageUrls[0]
+              : pic7 }
+              fill
             alt="preview"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             cover="true"
@@ -128,7 +129,7 @@ export const StorySelector = ({
 
   return (
     <>
-      <div className="pt-10 lg:mt-16 text-2xl px-5 ">
+      <div className="pt-4 lg:mt-4 text-2xl px-5 pb-80">
         {/* Stories Sorted By Likes */}
         <div className="font-sans text-sm  w-full  rounded-t-lg flex justify-end pr-8 gap-2">
           <button
